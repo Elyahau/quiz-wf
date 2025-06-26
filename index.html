@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quiz Climat - Wallis & Futuna</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <meta name="theme-color" content="#2c6e49" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>🌱 Quiz Environnement - Wallis & Futuna</h1>
+    <button id="start-btn">🎮 Démarrer le quiz</button>
+    <audio id="introAudio" src="audio/intro.mp3" preload="auto"></audio>
+    <audio id="outroAudio" src="audio/outro.mp3" preload="auto"></audio>
+    <audio id="correctSound" src="audio/correct.mp3" preload="auto"></audio>
+    <audio id="wrongSound" src="audio/wrong.mp3" preload="auto"></audio>
+  </header>
+
+  <main id="quiz-container" class="hidden">
+    <div id="theme"></div>
+    <div id="question"></div>
+    <div id="answers"></div>
+    <div id="timer"></div>
+    <button id="next-btn" class="hidden">Suivante</button>
+  </main>
+
+  <script src="script.js.js"></script>
+</body>
+</html>
