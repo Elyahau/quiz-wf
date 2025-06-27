@@ -1,5 +1,4 @@
- const questions = [
-  // 🌊 Eau
+const questions = [  // 💧 Eau
  {
   theme: "💧 Eau",
   question: "💧 Eau — Question 1 : Quelle est la proportion d’eau douce sur Terre ?",
@@ -273,27 +272,29 @@ const citations = [
   "“Fakaʻapaʻapa ki he fenua mo e vai.” – Futunien"
 ];
 
+const modeSelect = document.getElementById("mode-select");
+const themeSelect = document.getElementById("theme-select");
 const startBtn = document.getElementById("start-btn");
 const nextBtn = document.getElementById("next-btn");
-const questionContainer = document.getElementById("question-container");
+const menu = document.getElementById("menu");
+const quizContainer = document.getElementById("quiz-container");
+const themeDisplay = document.getElementById("theme");
 const questionDisplay = document.getElementById("question");
-const answersContainer = document.getElementById("answer-buttons");
+const answersContainer = document.getElementById("answers");
+const timerDisplay = document.getElementById("timer");
+const timerProgress = document.getElementById("timer-progress");
+const backToMenuDuringQuizBtn = document.getElementById("back-to-menu-during-quiz-btn");
 const resultContainer = document.getElementById("result-container");
 const resultText = document.getElementById("result-text");
-const timerDisplay = document.getElementById("timer");
 const backToMenuBtn = document.getElementById("back-to-menu-btn");
-const backToMenuDuringQuizBtn = document.getElementById("back-to-menu-during-quiz-btn");
-const themeSelector = document.getElementById("theme-selector");
-const themeSelect = document.getElementById("theme-select");
-const modeSelect = document.getElementById("mode-select"); // 👈 Nouveau pour gérer le mode
-const menu = document.getElementById("menu");
 
 let shuffledQuestions = [];
 let currentQuestionIndex = 0;
 let score = 0;
-let timerId = null;
-let timeLeft = 20;
-let isBattleMode = false; // 👈 Flag pour savoir si le mode est battle
+let timerId;
+let timeLeft;
+let currentMode = "normal";
+const MAX_TIME = 20;
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -302,254 +303,132 @@ function shuffle(array) {
   }
 }
 
-function startQuiz() {
-  const selectedTheme = themeSelect.value;
-  const selectedMode = modeSelect.value;
-  isBattleMode = selectedMode === 'battle'; // 👈 Détermine si le mode est "battle"
-
-  if (!selectedTheme) {
-    alert("Veuillez choisir une thématique avant de commencer.");
-    return;
-  }
-
+startBtn.addEventListener("click", () => {
+  const theme = themeSelect.value;
+  if (!theme) return alert("Veuillez choisir une thématique !");
+  currentMode = modeSelect.value;
   score = 0;
   currentQuestionIndex = 0;
-  if (selectedTheme === 'aleatoire') {
-    shuffledQuestions = questions.slice();
-  } else {
-    shuffledQuestions = questions.filter(q => q.theme === selectedTheme);
-  }
+  if (theme === "aleatoire") shuffledQuestions = [...questions];
+  else shuffledQuestions = questions.filter(q => q.theme === theme);
   shuffle(shuffledQuestions);
-  menu.classList.add('hidden');
-  questionContainer.classList.remove('hidden');
-  backToMenuDuringQuizBtn.classList.remove('hidden');
-  applyFuturisticStyle();
+  menu.classList.add("hidden");
+  quizContainer.classList.remove("hidden");
+  backToMenuDuringQuizBtn.classList.remove("hidden");
+  updateThemeDisplay(theme);
   showQuestion();
-}
+});
 
-function applyFuturisticStyle() {
-  questionDisplay.style.color = '#00ffea';
-  questionDisplay.style.textShadow = '0 0 10px #00ffea';
-  answersContainer.querySelectorAll('button').forEach(btn => {
-    btn.style.background = 'linear-gradient(135deg, #008f7a, #00ffea)';
-    btn.style.border = '1.5px solid #00ffea';
-    btn.style.color = '#001f25';
-    btn.style.transition = 'background 0.3s, color 0.3s, transform 0.3s';
-    btn.addEventListener('mouseenter', () => {
-      btn.style.background = '#00ffea';
-      btn.style.color = '#004d4d';
-      btn.style.transform = 'scale(1.05)';
-      btn.style.boxShadow = '0 0 15px #00ffea';
-    });
-    btn.addEventListener('mouseleave', () => {
-      btn.style.background = 'linear-gradient(135deg, #008f7a, #00ffea)';
-      btn.style.color = '#001f25';
-      btn.style.transform = 'scale(1)';
-      btn.style.boxShadow = 'none';
-    });
-  });
+function updateThemeDisplay(theme) {
+  themeDisplay.textContent = theme === "aleatoire"
+    ? "🎲 Thématique : Aléatoire"
+    : `Thématique : ${theme}`;
 }
 
 function startTimer() {
-  timeLeft = 20;
+  if (currentMode === "normal") {
+    timerDisplay.style.display = "none";
+    return;
+  }
+  timerDisplay.style.display = "block";
+  timeLeft = MAX_TIME;
+  timerProgress.style.width = "100%";
   timerDisplay.textContent = `⏳ Temps restant : ${timeLeft}s`;
-  timerDisplay.style.color = '#00ffea';
-  timerDisplay.style.textShadow = '0 0 8px #00ffea';
   timerId = setInterval(() => {
     timeLeft--;
     timerDisplay.textContent = `⏳ Temps restant : ${timeLeft}s`;
-    if (timeLeft <= 5) {
-      timerDisplay.style.color = '#ff0044';
-      timerDisplay.style.textShadow = '0 0 15px #ff0044';
-    }
+    timerProgress.style.width = `${(timeLeft / MAX_TIME) * 100}%`;
     if (timeLeft <= 0) {
       clearInterval(timerId);
       disableAnswers();
-      showCorrectAnswer();
-      nextBtn.classList.remove('hidden');
+      revealCorrect();
+      nextBtn.classList.remove("hidden");
     }
   }, 1000);
 }
 
+function clearTimer() {
+  clearInterval(timerId);
+}
+
 function showQuestion() {
-  resetState();
-  if (isBattleMode) startTimer(); // 👈 Timer seulement en battle mode
-
-  const currentQuestion = shuffledQuestions[currentQuestionIndex];
-  questionDisplay.textContent = currentQuestion.question;
-  questionDisplay.style.opacity = '0';
-  setTimeout(() => {
-    questionDisplay.style.transition = 'opacity 0.5s ease-in';
-    questionDisplay.style.opacity = '1';
-  }, 10);
-
-  currentQuestion.choices.forEach(choice => {
-    const button = document.createElement('button');
-    button.textContent = choice;
-    button.classList.add('btn');
-    button.style.cursor = 'pointer';
-    button.style.margin = '8px';
-    button.style.padding = '12px 20px';
-    button.style.fontFamily = "'Orbitron', sans-serif";
-    button.style.fontWeight = '600';
-    button.style.borderRadius = '8px';
-    button.style.boxShadow = '0 0 10px #00ffea55';
-    button.addEventListener('click', selectAnswer);
-    answersContainer.appendChild(button);
+  clearTimer();
+  answersContainer.innerHTML = "";
+  nextBtn.classList.add("hidden");
+  const q = shuffledQuestions[currentQuestionIndex];
+  questionDisplay.textContent = q.question;
+  startTimer();
+  q.choices.forEach(choice => {
+    const btn = document.createElement("button");
+    btn.textContent = choice;
+    btn.addEventListener("click", () => selectAnswer(choice));
+    answersContainer.appendChild(btn);
   });
-
-  applyFuturisticStyle();
-  nextBtn.classList.add('hidden');
 }
 
-function resetState() {
-  clearInterval(timerId);
-  timerDisplay.textContent = "";
-  nextBtn.classList.add('hidden');
-  while (answersContainer.firstChild) {
-    answersContainer.removeChild(answersContainer.firstChild);
-  }
-  questionDisplay.style.transition = 'none';
+function selectAnswer(chosen) {
+  clearTimer();
+  const correct = shuffledQuestions[currentQuestionIndex].answer;
+  Array.from(answersContainer.children).forEach(btn => {
+    btn.disabled = true;
+    if (btn.textContent === correct) btn.classList.add("correct");
+    if (btn.textContent === chosen && chosen !== correct) btn.classList.add("incorrect");
+  });
+  if (chosen === correct) score++;
+  nextBtn.classList.remove("hidden");
 }
 
-function selectAnswer(e) {
-  clearInterval(timerId);
-  const selectedBtn = e.target;
-  const answer = selectedBtn.textContent;
-  const correctAnswer = shuffledQuestions[currentQuestionIndex].answer;
-  disableAnswers();
+nextBtn.addEventListener("click", () => {
+  currentQuestionIndex++;
+  if (currentQuestionIndex < shuffledQuestions.length) showQuestion();
+  else showResult();
+});
 
-  if (answer === correctAnswer) {
-    selectedBtn.classList.add('correct');
-    selectedBtn.style.backgroundColor = '#00ffae';
-    selectedBtn.style.color = '#004d33';
-    selectedBtn.style.boxShadow = '0 0 20px #00ffae';
-    score++;
-  } else {
-    selectedBtn.classList.add('incorrect');
-    selectedBtn.style.backgroundColor = '#ff0044';
-    selectedBtn.style.color = '#330000';
-    selectedBtn.style.boxShadow = '0 0 20px #ff0044';
-    Array.from(answersContainer.children).forEach(button => {
-      if (button.textContent === correctAnswer) {
-        button.classList.add('correct');
-        button.style.backgroundColor = '#00ffae';
-        button.style.color = '#004d33';
-        button.style.boxShadow = '0 0 20px #00ffae';
-      }
-    });
-  }
-  nextBtn.classList.remove('hidden');
+function showResult() {
+  quizContainer.classList.add("hidden");
+  backToMenuDuringQuizBtn.classList.add("hidden");
+  resultContainer.classList.remove("hidden");
+  resultText.textContent = `Quiz terminé ! Votre score : ${score} / ${shuffledQuestions.length}`;
+
+  const oldCitation = resultContainer.querySelector(".citation");
+  if (oldCitation) oldCitation.remove();
+
+  const cite = citations[Math.floor(Math.random() * citations.length)];
+  const p = document.createElement("p");
+  p.classList.add("citation");
+  p.style.fontStyle = "italic";
+  p.style.marginTop = "10px";
+  p.textContent = cite;
+  resultContainer.appendChild(p);
 }
 
 function disableAnswers() {
-  Array.from(answersContainer.children).forEach(button => {
-    button.disabled = true;
-    button.style.cursor = 'default';
-  });
+  Array.from(answersContainer.children).forEach(btn => btn.disabled = true);
 }
 
-function showCorrectAnswer() {
-  const correctAnswer = shuffledQuestions[currentQuestionIndex].answer;
-  Array.from(answersContainer.children).forEach(button => {
-    if (button.textContent === correctAnswer) {
-      button.classList.add('correct');
-      button.style.backgroundColor = '#00ffae';
-      button.style.color = '#004d33';
-      button.style.boxShadow = '0 0 20px #00ffae';
-    } else {
-      button.disabled = true;
-      button.style.cursor = 'default';
-    }
-  });
+function revealCorrect() {
+  const correct = shuffledQuestions[currentQuestionIndex].answer;
+  Array.from(answersContainer.children)
+    .find(btn => btn.textContent === correct)
+    .classList.add("correct");
 }
 
-function nextQuestion() {
-  currentQuestionIndex++;
-  if (currentQuestionIndex < shuffledQuestions.length) {
-    showQuestion();
-  } else {
-    endQuiz();
-  }
-}
-
-function endQuiz() {
-  resetState();
-  timerDisplay.textContent = "";
-  questionDisplay.textContent = `Quiz terminé ! Votre score : ${score} / ${shuffledQuestions.length}.`;
-  questionDisplay.style.color = '#00ffea';
-  questionDisplay.style.textShadow = '0 0 15px #00ffea';
-  answersContainer.innerHTML = "";
-
-  const ratio = score / shuffledQuestions.length;
-  let message;
-  if (ratio === 1) message = "🎉 Parfait !";
-  else if (ratio >= 0.8) message = "👍 Très bien joué !";
-  else if (ratio >= 0.5) message = "😊 Pas mal, continue !";
-  else message = "💪 Encore un effort !";
-
-  const scoreMsg = document.createElement('p');
-  scoreMsg.id = 'score-message';
-  scoreMsg.style.color = '#00ffea';
-  scoreMsg.style.fontFamily = "'Orbitron', sans-serif";
-  scoreMsg.style.fontSize = '1.5rem';
-  scoreMsg.style.margin = '10px 0';
-  scoreMsg.textContent = message;
-  answersContainer.appendChild(scoreMsg);
-
-  const citation = document.createElement('p');
-  citation.id = 'citation';
-  citation.style.fontStyle = 'italic';
-  citation.style.color = '#00ddb7';
-  citation.style.marginTop = '15px';
-  citation.textContent = citations[Math.floor(Math.random() * citations.length)];
-  answersContainer.appendChild(citation);
-
-  const backBtn = document.createElement('button');
-  backBtn.id = 'back-btn';
-  backBtn.textContent = 'Retour au menu';
-  backBtn.classList.add('btn');
-  backBtn.style.background = 'linear-gradient(135deg, #008f7a, #00ffea)';
-  backBtn.style.color = '#001f25';
-  backBtn.style.border = '1.5px solid #00ffea';
-  backBtn.style.borderRadius = '8px';
-  backBtn.style.padding = '12px 24px';
-  backBtn.style.marginTop = '20px';
-  backBtn.style.cursor = 'pointer';
-  backBtn.style.fontFamily = "'Orbitron', sans-serif";
-  backBtn.style.fontWeight = '600';
-  backBtn.style.boxShadow = '0 0 15px #00ffea';
-  backBtn.addEventListener('mouseenter', () => {
-    backBtn.style.background = '#00ffea';
-    backBtn.style.color = '#004d4d';
-    backBtn.style.transform = 'scale(1.05)';
-    backBtn.style.boxShadow = '0 0 25px #00ffea';
-  });
-  backBtn.addEventListener('mouseleave', () => {
-    backBtn.style.background = 'linear-gradient(135deg, #008f7a, #00ffea)';
-    backBtn.style.color = '#001f25';
-    backBtn.style.transform = 'scale(1)';
-    backBtn.style.boxShadow = '0 0 15px #00ffea';
-  });
-  backBtn.addEventListener('click', () => {
-    questionContainer.classList.add('hidden');
-    menu.classList.remove('hidden');
-    backToMenuDuringQuizBtn.classList.add('hidden');
-  });
-  answersContainer.appendChild(backBtn);
-}
-
-startBtn.addEventListener("click", startQuiz);
-nextBtn.addEventListener("click", nextQuestion);
-backToMenuBtn.addEventListener("click", () => {
-  resultContainer.classList.add("hidden");
-  menu.classList.remove("hidden");
-});
 backToMenuDuringQuizBtn.addEventListener("click", () => {
-  if (confirm("Voulez-vous vraiment quitter le quiz en cours ?")) {
-    clearInterval(timerId);
-    questionContainer.classList.add('hidden');
-    menu.classList.remove('hidden');
-    backToMenuDuringQuizBtn.classList.add('hidden');
-  }
+  if (confirm("Quitter le quiz et perdre la progression ?")) resetQuiz();
 });
+
+backToMenuBtn.addEventListener("click", resetQuiz);
+
+function resetQuiz() {
+  clearTimer();
+  score = 0;
+  currentQuestionIndex = 0;
+  shuffledQuestions = [];
+  menu.classList.remove("hidden");
+  quizContainer.classList.add("hidden");
+  resultContainer.classList.add("hidden");
+  backToMenuDuringQuizBtn.classList.add("hidden");
+  themeSelect.value = "";
+  const oldCitation = resultContainer.querySelector(".citation");
+  if (oldCitation) oldCitation.remove();
+}
