@@ -283,6 +283,8 @@ const resultText = document.getElementById("result-text");
 const backToMenuBtn = document.getElementById("back-to-menu-btn");
 const timerElement = document.getElementById("timer");
 const themeSelector = document.getElementById("theme-selector");
+const backToMenuDuringQuizBtn = document.getElementById("back-to-menu-during-quiz-btn");
+
 
 let currentQuestions = [];
 let currentQuestionIndex = 0;
@@ -300,6 +302,22 @@ nextBtn.addEventListener("click", () => {
   }
 });
 
+backToMenuBtn.addEventListener("click", () => {
+  resultContainer.classList.add("hidden");
+  startBtn.classList.remove("hidden");
+  themeSelector.classList.remove("hidden");
+  backToMenuDuringQuizBtn.classList.add("hidden");  // cacher bouton retour quiz
+});
+
+backToMenuDuringQuizBtn.addEventListener("click", () => {
+  clearInterval(timer);
+  questionContainer.classList.add("hidden");
+  resultContainer.classList.add("hidden");
+  startBtn.classList.remove("hidden");
+  themeSelector.classList.remove("hidden");
+  backToMenuDuringQuizBtn.classList.add("hidden");
+});
+
 function startQuiz() {
   const selectedTheme = themeSelector.value;
   currentQuestions = questions.filter(q => q.theme === selectedTheme);
@@ -310,6 +328,7 @@ function startQuiz() {
   startBtn.classList.add("hidden");
   themeSelector.classList.add("hidden");
   resultContainer.classList.add("hidden");
+  backToMenuDuringQuizBtn.classList.remove("hidden");  // afficher bouton retour quiz
   showQuestion();
 }
 
@@ -382,16 +401,11 @@ function showCorrectAnswer() {
 function endQuiz() {
   questionContainer.classList.add("hidden");
   resultContainer.classList.remove("hidden");
+  backToMenuDuringQuizBtn.classList.add("hidden");  // cacher bouton retour quiz
   const randomQuote = citations[Math.floor(Math.random() * citations.length)];
   resultText.innerText = `Quiz terminé ! Ton score : ${score} / ${currentQuestions.length}\n\n${randomQuote}`;
   backToMenuBtn.classList.remove("hidden");
 }
-
-backToMenuBtn.addEventListener("click", () => {
-  resultContainer.classList.add("hidden");
-  startBtn.classList.remove("hidden");
-  themeSelector.classList.remove("hidden");
-});
 
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -399,3 +413,10 @@ function shuffleArray(array) {
     [array[i], array[j]] = [array[j], array[i]];
   }
 }
+Et dans ton HTML, il faut ajouter le bouton suivant (quelque part dans la page) :
+html
+Copier
+Modifier
+<button id="back-to-menu-during-quiz-btn" class="hidden">Retour au menu</button>
+Si tu veux, je peux aussi te générer un fichier HTML complet avec ce bouton et tout.
+Dis-moi si tu souhaites ça, ou si tu veux autre chose !
