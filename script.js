@@ -269,7 +269,9 @@ const citations = [
   "“Sauver notre planète, c’est sauver notre maison.” – Leonardo DiCaprio",
   "“Nous n'héritons pas de la Terre de nos ancêtres, nous l'empruntons à nos enfants.” – Antoine de Saint-Exupéry",
   "“Chaque geste compte, aussi petit soit-il.” – Anonyme",
-  "“Tou haofaki te kahau o te tou'u fanau.” – Proverbe wallisien"
+  "“Tou haofaki te kahau o te tou'u fanau.” – Wallisien"
+  "“Fakaʻapaʻapa ki he fenua mo e vai.” – Futunien"
+
 ];
 const startBtn = document.getElementById("start-btn");
 const nextBtn = document.getElementById("next-btn");
