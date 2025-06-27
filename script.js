@@ -285,7 +285,6 @@ const backToMenuBtn = document.getElementById("back-to-menu-btn");
 const backToMenuDuringQuizBtn = document.getElementById("back-to-menu-during-quiz-btn");
 const themeSelector = document.getElementById("theme-selector");
 const themeSelect = document.getElementById("theme-select");
-const modeSelect = document.getElementById("mode-select");
 const menu = document.getElementById("menu");
 
 let shuffledQuestions = [];
@@ -293,7 +292,7 @@ let currentQuestionIndex = 0;
 let score = 0;
 let timerId = null;
 let timeLeft = 20;
-let isBattleMode = false;
+let currentMode = "normal";
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -304,16 +303,13 @@ function shuffle(array) {
 
 function startQuiz() {
   const selectedTheme = themeSelect.value;
-  const selectedMode = modeSelect.value;
-  isBattleMode = selectedMode === 'battle';
-
   if (!selectedTheme) {
     alert("Veuillez choisir une thématique avant de commencer.");
     return;
   }
-
   score = 0;
   currentQuestionIndex = 0;
+  currentMode = themeSelect.options[themeSelect.selectedIndex].dataset.mode || "normal";
   if (selectedTheme === 'aleatoire') {
     shuffledQuestions = questions.slice();
   } else {
@@ -351,6 +347,12 @@ function applyFuturisticStyle() {
 }
 
 function startTimer() {
+  if (currentMode === "normal") {
+    timerDisplay.style.display = "none";
+    return;
+  } else {
+    timerDisplay.style.display = "block";
+  }
   timeLeft = 20;
   timerDisplay.textContent = `⏳ Temps restant : ${timeLeft}s`;
   timerDisplay.style.color = '#00ffea';
@@ -373,8 +375,7 @@ function startTimer() {
 
 function showQuestion() {
   resetState();
-  if (isBattleMode) startTimer();
-
+  if (currentMode !== "normal") startTimer();
   const currentQuestion = shuffledQuestions[currentQuestionIndex];
   questionDisplay.textContent = currentQuestion.question;
   questionDisplay.style.opacity = '0';
@@ -382,7 +383,6 @@ function showQuestion() {
     questionDisplay.style.transition = 'opacity 0.5s ease-in';
     questionDisplay.style.opacity = '1';
   }, 10);
-
   currentQuestion.choices.forEach(choice => {
     const button = document.createElement('button');
     button.textContent = choice;
@@ -397,14 +397,18 @@ function showQuestion() {
     button.addEventListener('click', selectAnswer);
     answersContainer.appendChild(button);
   });
-
   applyFuturisticStyle();
   nextBtn.classList.add('hidden');
 }
 
 function resetState() {
   clearInterval(timerId);
-  timerDisplay.textContent = "";
+  if (currentMode === "normal") {
+    timerDisplay.style.display = "none";
+  } else {
+    timerDisplay.style.display = "block";
+    timerDisplay.textContent = "";
+  }
   nextBtn.classList.add('hidden');
   while (answersContainer.firstChild) {
     answersContainer.removeChild(answersContainer.firstChild);
@@ -418,7 +422,6 @@ function selectAnswer(e) {
   const answer = selectedBtn.textContent;
   const correctAnswer = shuffledQuestions[currentQuestionIndex].answer;
   disableAnswers();
-
   if (answer === correctAnswer) {
     selectedBtn.classList.add('correct');
     selectedBtn.style.backgroundColor = '#00ffae';
@@ -480,14 +483,12 @@ function endQuiz() {
   questionDisplay.style.color = '#00ffea';
   questionDisplay.style.textShadow = '0 0 15px #00ffea';
   answersContainer.innerHTML = "";
-
   const ratio = score / shuffledQuestions.length;
   let message;
   if (ratio === 1) message = "🎉 Parfait !";
   else if (ratio >= 0.8) message = "👍 Très bien joué !";
   else if (ratio >= 0.5) message = "😊 Pas mal, continue !";
   else message = "💪 Encore un effort !";
-
   const scoreMsg = document.createElement('p');
   scoreMsg.id = 'score-message';
   scoreMsg.style.color = '#00ffea';
@@ -496,7 +497,6 @@ function endQuiz() {
   scoreMsg.style.margin = '10px 0';
   scoreMsg.textContent = message;
   answersContainer.appendChild(scoreMsg);
-
   const citation = document.createElement('p');
   citation.id = 'citation';
   citation.style.fontStyle = 'italic';
@@ -504,7 +504,6 @@ function endQuiz() {
   citation.style.marginTop = '15px';
   citation.textContent = citations[Math.floor(Math.random() * citations.length)];
   answersContainer.appendChild(citation);
-
   const backBtn = document.createElement('button');
   backBtn.id = 'back-btn';
   backBtn.textContent = 'Retour au menu';
@@ -553,3 +552,4 @@ backToMenuDuringQuizBtn.addEventListener("click", () => {
     backToMenuDuringQuizBtn.classList.add('hidden');
   }
 });
+
