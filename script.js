@@ -317,15 +317,46 @@ function startQuiz() {
   menu.classList.add('hidden');
   questionContainer.classList.remove('hidden');
   backToMenuDuringQuizBtn.classList.remove('hidden');
+  applyFuturisticStyle();
   showQuestion();
+}
+
+function applyFuturisticStyle() {
+  // Applique un style futuriste et écologique à la question et aux boutons
+  questionDisplay.style.color = '#00ffea';
+  questionDisplay.style.textShadow = '0 0 10px #00ffea';
+  answersContainer.querySelectorAll('button').forEach(btn => {
+    btn.style.background = 'linear-gradient(135deg, #008f7a, #00ffea)';
+    btn.style.border = '1.5px solid #00ffea';
+    btn.style.color = '#001f25';
+    btn.style.transition = 'background 0.3s, color 0.3s, transform 0.3s';
+    btn.addEventListener('mouseenter', () => {
+      btn.style.background = '#00ffea';
+      btn.style.color = '#004d4d';
+      btn.style.transform = 'scale(1.05)';
+      btn.style.boxShadow = '0 0 15px #00ffea';
+    });
+    btn.addEventListener('mouseleave', () => {
+      btn.style.background = 'linear-gradient(135deg, #008f7a, #00ffea)';
+      btn.style.color = '#001f25';
+      btn.style.transform = 'scale(1)';
+      btn.style.boxShadow = 'none';
+    });
+  });
 }
 
 function startTimer() {
   timeLeft = 20;
   timerDisplay.textContent = `⏳ Temps restant : ${timeLeft}s`;
+  timerDisplay.style.color = '#00ffea';
+  timerDisplay.style.textShadow = '0 0 8px #00ffea';
   timerId = setInterval(() => {
     timeLeft--;
     timerDisplay.textContent = `⏳ Temps restant : ${timeLeft}s`;
+    if (timeLeft <= 5) {
+      timerDisplay.style.color = '#ff0044';
+      timerDisplay.style.textShadow = '0 0 15px #ff0044';
+    }
     if (timeLeft <= 0) {
       clearInterval(timerId);
       disableAnswers();
@@ -340,13 +371,28 @@ function showQuestion() {
   startTimer();
   const currentQuestion = shuffledQuestions[currentQuestionIndex];
   questionDisplay.textContent = currentQuestion.question;
+  questionDisplay.style.opacity = '0';
+  // Animation fade-in
+  setTimeout(() => {
+    questionDisplay.style.transition = 'opacity 0.5s ease-in';
+    questionDisplay.style.opacity = '1';
+  }, 10);
+
   currentQuestion.choices.forEach(choice => {
     const button = document.createElement('button');
     button.textContent = choice;
     button.classList.add('btn');
+    button.style.cursor = 'pointer';
+    button.style.margin = '8px';
+    button.style.padding = '12px 20px';
+    button.style.fontFamily = "'Orbitron', sans-serif";
+    button.style.fontWeight = '600';
+    button.style.borderRadius = '8px';
+    button.style.boxShadow = '0 0 10px #00ffea55';
     button.addEventListener('click', selectAnswer);
     answersContainer.appendChild(button);
   });
+  applyFuturisticStyle();
   nextBtn.classList.add('hidden');
 }
 
@@ -357,6 +403,7 @@ function resetState() {
   while (answersContainer.firstChild) {
     answersContainer.removeChild(answersContainer.firstChild);
   }
+  questionDisplay.style.transition = 'none';
 }
 
 function selectAnswer(e) {
@@ -367,12 +414,21 @@ function selectAnswer(e) {
   disableAnswers();
   if (answer === correctAnswer) {
     selectedBtn.classList.add('correct');
+    selectedBtn.style.backgroundColor = '#00ffae';
+    selectedBtn.style.color = '#004d33';
+    selectedBtn.style.boxShadow = '0 0 20px #00ffae';
     score++;
   } else {
     selectedBtn.classList.add('incorrect');
+    selectedBtn.style.backgroundColor = '#ff0044';
+    selectedBtn.style.color = '#330000';
+    selectedBtn.style.boxShadow = '0 0 20px #ff0044';
     Array.from(answersContainer.children).forEach(button => {
       if (button.textContent === correctAnswer) {
         button.classList.add('correct');
+        button.style.backgroundColor = '#00ffae';
+        button.style.color = '#004d33';
+        button.style.boxShadow = '0 0 20px #00ffae';
       }
     });
   }
@@ -382,6 +438,7 @@ function selectAnswer(e) {
 function disableAnswers() {
   Array.from(answersContainer.children).forEach(button => {
     button.disabled = true;
+    button.style.cursor = 'default';
   });
 }
 
@@ -390,8 +447,12 @@ function showCorrectAnswer() {
   Array.from(answersContainer.children).forEach(button => {
     if (button.textContent === correctAnswer) {
       button.classList.add('correct');
+      button.style.backgroundColor = '#00ffae';
+      button.style.color = '#004d33';
+      button.style.boxShadow = '0 0 20px #00ffae';
     } else {
       button.disabled = true;
+      button.style.cursor = 'default';
     }
   });
 }
@@ -409,7 +470,10 @@ function endQuiz() {
   resetState();
   timerDisplay.textContent = "";
   questionDisplay.textContent = `Quiz terminé ! Votre score : ${score} / ${shuffledQuestions.length}.`;
+  questionDisplay.style.color = '#00ffea';
+  questionDisplay.style.textShadow = '0 0 15px #00ffea';
   answersContainer.innerHTML = "";
+
   const ratio = score / shuffledQuestions.length;
   let message;
   if (ratio === 1) message = "🎉 Parfait !";
@@ -419,11 +483,18 @@ function endQuiz() {
 
   const scoreMsg = document.createElement('p');
   scoreMsg.id = 'score-message';
+  scoreMsg.style.color = '#00ffea';
+  scoreMsg.style.fontFamily = "'Orbitron', sans-serif";
+  scoreMsg.style.fontSize = '1.5rem';
+  scoreMsg.style.margin = '10px 0';
   scoreMsg.textContent = message;
   answersContainer.appendChild(scoreMsg);
 
   const citation = document.createElement('p');
   citation.id = 'citation';
+  citation.style.fontStyle = 'italic';
+  citation.style.color = '#00ddb7';
+  citation.style.marginTop = '15px';
   citation.textContent = citations[Math.floor(Math.random() * citations.length)];
   answersContainer.appendChild(citation);
 
@@ -431,22 +502,47 @@ function endQuiz() {
   backBtn.id = 'back-btn';
   backBtn.textContent = 'Retour au menu';
   backBtn.classList.add('btn');
+  backBtn.style.background = 'linear-gradient(135deg, #008f7a, #00ffea)';
+  backBtn.style.color = '#001f25';
+  backBtn.style.border = '1.5px solid #00ffea';
+  backBtn.style.borderRadius = '8px';
+  backBtn.style.padding = '12px 24px';
+  backBtn.style.marginTop = '20px';
+  backBtn.style.cursor = 'pointer';
+  backBtn.style.fontFamily = "'Orbitron', sans-serif";
+  backBtn.style.fontWeight = '600';
+  backBtn.style.boxShadow = '0 0 15px #00ffea';
+  backBtn.addEventListener('mouseenter', () => {
+    backBtn.style.background = '#00ffea';
+    backBtn.style.color = '#004d4d';
+    backBtn.style.transform = 'scale(1.05)';
+    backBtn.style.boxShadow = '0 0 25px #00ffea';
+  });
+  backBtn.addEventListener('mouseleave', () => {
+    backBtn.style.background = 'linear-gradient(135deg, #008f7a, #00ffea)';
+    backBtn.style.color = '#001f25';
+    backBtn.style.transform = 'scale(1)';
+    backBtn.style.boxShadow = '0 0 15px #00ffea';
+  });
   backBtn.addEventListener('click', () => {
     questionContainer.classList.add('hidden');
-    backToMenuDuringQuizBtn.classList.add('hidden');
     menu.classList.remove('hidden');
-    themeSelect.value = "";
+    backToMenuDuringQuizBtn.classList.add('hidden');
   });
   answersContainer.appendChild(backBtn);
 }
 
-startBtn.addEventListener('click', startQuiz);
-nextBtn.addEventListener('click', nextQuestion);
-
-backToMenuDuringQuizBtn.addEventListener('click', () => {
-  clearInterval(timerId);
-  questionContainer.classList.add('hidden');
-  backToMenuDuringQuizBtn.classList.add('hidden');
-  menu.classList.remove('hidden');
-  themeSelect.value = "";
+startBtn.addEventListener("click", startQuiz);
+nextBtn.addEventListener("click", nextQuestion);
+backToMenuBtn.addEventListener("click", () => {
+  resultContainer.classList.add("hidden");
+  menu.classList.remove("hidden");
+});
+backToMenuDuringQuizBtn.addEventListener("click", () => {
+  if (confirm("Voulez-vous vraiment quitter le quiz en cours ?")) {
+    clearInterval(timerId);
+    questionContainer.classList.add('hidden');
+    menu.classList.remove('hidden');
+    backToMenuDuringQuizBtn.classList.add('hidden');
+  }
 });
