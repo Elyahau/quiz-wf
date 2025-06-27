@@ -262,7 +262,14 @@ const questions = [
     answer: "Verre",
   }
 ];
-
+const citations = [
+  "“La Terre ne nous appartient pas, nous l’empruntons à nos enfants.” – Proverbe amérindien",
+  "“Il n’y a pas de passagers sur le vaisseau Terre. Nous sommes tous des membres de l’équipage.” – Marshall McLuhan",
+  "“Le meilleur moment pour planter un arbre était il y a 20 ans. Le deuxième meilleur moment est maintenant.” – Proverbe chinois",
+  "“Sauver notre planète, c’est sauver notre maison.” – Leonardo DiCaprio",
+  "“Nous n'héritons pas de la Terre de nos ancêtres, nous l'empruntons à nos enfants.” – Antoine de Saint-Exupéry",
+  "“Chaque geste compte, aussi petit soit-il.” – Anonyme"
+];
 
 let selectedTheme = "";
 let filteredQuestions = [];
