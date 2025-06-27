@@ -285,6 +285,7 @@ const backToMenuBtn = document.getElementById("back-to-menu-btn");
 const backToMenuDuringQuizBtn = document.getElementById("back-to-menu-during-quiz-btn");
 const themeSelector = document.getElementById("theme-selector");
 const themeSelect = document.getElementById("theme-select");
+const modeSelect = document.getElementById("mode-select");
 const menu = document.getElementById("menu");
 
 let shuffledQuestions = [];
@@ -292,6 +293,7 @@ let currentQuestionIndex = 0;
 let score = 0;
 let timerId = null;
 let timeLeft = 20;
+let isBattleMode = false;
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -302,10 +304,14 @@ function shuffle(array) {
 
 function startQuiz() {
   const selectedTheme = themeSelect.value;
+  const selectedMode = modeSelect.value;
+  isBattleMode = selectedMode === 'battle';
+
   if (!selectedTheme) {
     alert("Veuillez choisir une thématique avant de commencer.");
     return;
   }
+
   score = 0;
   currentQuestionIndex = 0;
   if (selectedTheme === 'aleatoire') {
@@ -322,7 +328,6 @@ function startQuiz() {
 }
 
 function applyFuturisticStyle() {
-  // Applique un style futuriste et écologique à la question et aux boutons
   questionDisplay.style.color = '#00ffea';
   questionDisplay.style.textShadow = '0 0 10px #00ffea';
   answersContainer.querySelectorAll('button').forEach(btn => {
@@ -368,11 +373,11 @@ function startTimer() {
 
 function showQuestion() {
   resetState();
-  startTimer();
+  if (isBattleMode) startTimer();
+
   const currentQuestion = shuffledQuestions[currentQuestionIndex];
   questionDisplay.textContent = currentQuestion.question;
   questionDisplay.style.opacity = '0';
-  // Animation fade-in
   setTimeout(() => {
     questionDisplay.style.transition = 'opacity 0.5s ease-in';
     questionDisplay.style.opacity = '1';
@@ -392,6 +397,7 @@ function showQuestion() {
     button.addEventListener('click', selectAnswer);
     answersContainer.appendChild(button);
   });
+
   applyFuturisticStyle();
   nextBtn.classList.add('hidden');
 }
@@ -412,6 +418,7 @@ function selectAnswer(e) {
   const answer = selectedBtn.textContent;
   const correctAnswer = shuffledQuestions[currentQuestionIndex].answer;
   disableAnswers();
+
   if (answer === correctAnswer) {
     selectedBtn.classList.add('correct');
     selectedBtn.style.backgroundColor = '#00ffae';
