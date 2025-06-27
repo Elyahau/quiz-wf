@@ -10,49 +10,43 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div id="menu">
-  <h2>Bienvenue dans le Quiz Climat 🌱</h2>
-  <p>Testez vos connaissances sur l'environnement à Wallis-et-Futuna.</p>
-  <button id="start-btn">Démarrer le Quiz</button>
-</div>
-
-<main id="quiz-container" class="hidden">
-  <div id="theme"></div>
-  <div id="question"></div>
-  <div id="answers"></div>
-  <div id="timer"></div>
-  <button id="next-btn" class="hidden">Suivante</button>
-</main>
-
   <header>
     <h1>🌱 Quiz Environnement - Wallis & Futuna</h1>
-    <div id="menu-container">
-  <h2>Choisis une thématique</h2>
-  <select id="theme-select">
-    <option value="">-- Sélectionne une thématique --</option>
-    <option value="eau">💧 Eau</option>
-    <option value="biodiversite">🦋 Biodiversité</option>
-    <option value="climat">🌍 Climat</option>
-    <option value="energie">⚡ Énergie</option>
-    <option value="dechets">🗑️ Déchets</option>
-    <option value="wf">🌴 Wallis & Futuna</option>
-    <option value="aleatoire">🎲 Aléatoire</option>
-  </select>
-</div>
-    <button id="start-btn">🎮 Démarrer le quiz</button>
-    <audio id="introAudio" src="audio/intro.mp3" preload="auto"></audio>
-    <audio id="outroAudio" src="audio/outro.mp3" preload="auto"></audio>
-    <audio id="correctSound" src="audio/correct.mp3" preload="auto"></audio>
-    <audio id="wrongSound" src="audio/wrong.mp3" preload="auto"></audio>
   </header>
 
+  <div id="menu">
+    <h2>Bienvenue dans le Quiz Climat 🌱</h2>
+    <p>Testez vos connaissances sur l'environnement à Wallis-et-Futuna.</p>
+
+    <div id="menu-container">
+      <h2>Choisis une thématique</h2>
+      <select id="theme-select">
+        <option value="">-- Sélectionne une thématique --</option>
+        <option value="eau">💧 Eau</option>
+        <option value="biodiversite">🦋 Biodiversité</option>
+        <option value="climat">🌍 Climat</option>
+        <option value="energie">⚡ Énergie</option>
+        <option value="dechets">🗑️ Déchets</option>
+        <option value="wf">🌴 Wallis & Futuna</option>
+        <option value="aleatoire">🎲 Aléatoire</option>
+      </select>
+    </div>
+
+    <button id="start-btn">🎮 Démarrer le quiz</button>
+  </div>
+
   <main id="quiz-container" class="hidden">
-    <div id="theme"></div>
-    <div id="question"></div>
-    <div id="answers"></div>
-    <div id="timer"></div>
+    <div id="theme" class="theme"></div>
+    <div id="question" class="question"></div>
+    <div id="answers" class="answers"></div>
+    <div id="timer" class="timer"></div>
     <button id="next-btn" class="hidden">Suivante</button>
   </main>
+
+  <audio id="introAudio" src="audio/intro.mp3" preload="auto"></audio>
+  <audio id="outroAudio" src="audio/outro.mp3" preload="auto"></audio>
+  <audio id="correctSound" src="audio/correct.mp3" preload="auto"></audio>
+  <audio id="wrongSound" src="audio/wrong.mp3" preload="auto"></audio>
 
   <script src="script.js"></script>
 </body>
