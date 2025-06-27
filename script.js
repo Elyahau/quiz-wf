@@ -271,143 +271,141 @@ const citations = [
   "“Chaque geste compte, aussi petit soit-il.” – Anonyme"
 ];
 
-let selectedTheme = "";
-let filteredQuestions = [];
-let currentQuestionIndex = 0;
+const themeSelect = document.getElementById('theme-select');
+const startBtn = document.getElementById('start-btn');
+const menu = document.getElementById('menu');
+const quizContainer = document.getElementById('quiz-container');
+const themeDisplay = document.getElementById('theme');
+const questionDisplay = document.getElementById('question');
+const answersContainer = document.getElementById('answers');
+const timerDisplay = document.getElementById('timer');
+const nextBtn = document.getElementById('next-btn');
+
+let shuffledQuestions = [];
+let currentIndex = 0;
 let score = 0;
-let timerInterval;
-let timeLeft = 20;
+let timer;
+let timeLeft = 15;
 
-const startBtn = document.getElementById("start-btn");
-const nextBtn = document.getElementById("next-btn");
-const questionContainer = document.getElementById("quiz-container");
-const themeSelect = document.getElementById("theme-select");
-const questionEl = document.getElementById("question");
-const answersEl = document.getElementById("answers");
-const themeTitle = document.getElementById("theme");
-const timerEl = document.getElementById("timer");
-
-const introAudio = document.getElementById("introAudio");
-const outroAudio = document.getElementById("outroAudio");
-const correctSound = document.getElementById("correctSound");
-const wrongSound = document.getElementById("wrongSound");
-
-startBtn.addEventListener("click", () => {
-  selectedTheme = themeSelect.value;
-
+function startQuiz() {
+  const selectedTheme = themeSelect.value;
   if (!selectedTheme) {
     alert("Merci de choisir une thématique !");
     return;
   }
-
-  introAudio.play();
-  filteredQuestions = selectedTheme === "aleatoire"
-    ? shuffleArray(questions)
-    : questions.filter(q => q.theme === selectedTheme);
-
-  if (filteredQuestions.length === 0) {
-    alert("Aucune question trouvée pour cette thématique.");
+  if (selectedTheme === 'aleatoire') {
+    shuffledQuestions = questions.slice();
+  } else {
+    shuffledQuestions = questions.filter(q => q.theme === selectedTheme);
+  }
+  if (shuffledQuestions.length === 0) {
+    alert("Aucune question disponible pour cette thématique.");
     return;
   }
-
-  currentQuestionIndex = 0;
+  shuffledQuestions.sort(() => Math.random() - 0.5);
+  currentIndex = 0;
   score = 0;
-  document.getElementById("menu-container").classList.add("hidden");
-  startBtn.classList.add("hidden");
-  questionContainer.classList.remove("hidden");
-
+  menu.classList.add('hidden');
+  quizContainer.classList.remove('hidden');
+  nextBtn.classList.add('hidden');
   showQuestion();
-});
-
-nextBtn.addEventListener("click", () => {
-  currentQuestionIndex++;
-  if (currentQuestionIndex < filteredQuestions.length) {
-    showQuestion();
-  } else {
-    showFinalScore();
-  }
-});
+  startTimer();
+  themeDisplay.textContent = `Thématique : ${selectedTheme}`;
+}
 
 function showQuestion() {
-  clearInterval(timerInterval);
-  timeLeft = 20;
-  startTimer();
-
-  const current = filteredQuestions[currentQuestionIndex];
-  themeTitle.textContent = `Thématique : ${capitalize(current.theme)}`;
-  questionEl.textContent = current.question;
-  answersEl.innerHTML = "";
-  nextBtn.classList.add("hidden");
-
-  current.choices.forEach((choice, index) => {
-    const btn = document.createElement("button");
-    btn.textContent = choice;
-    btn.addEventListener("click", () => selectAnswer(index, current.choices.indexOf(current.answer)));
-    answersEl.appendChild(btn);
+  resetState();
+  let currentQuestion = shuffledQuestions[currentIndex];
+  questionDisplay.textContent = currentQuestion.question;
+  currentQuestion.choices.forEach(choice => {
+    const button = document.createElement('button');
+    button.textContent = choice;
+    button.addEventListener('click', () => selectAnswer(choice));
+    answersContainer.appendChild(button);
   });
-
-  // Ajouter citation sous la question
-  const citationEl = document.createElement("p");
-  citationEl.textContent = getRandomCitation();
-  citationEl.style.fontStyle = "italic";
-  citationEl.style.marginTop = "10px";
-  answersEl.appendChild(citationEl);
 }
 
-function selectAnswer(selected, correctIndex) {
-  clearInterval(timerInterval);
-  const buttons = answersEl.querySelectorAll("button");
-
-  buttons.forEach((btn, index) => {
-    btn.disabled = true;
-    if (index === correctIndex) {
-      btn.classList.add("correct");
-    }
-    if (index === selected && selected !== correctIndex) {
-      btn.classList.add("incorrect");
-    }
-  });
-
-  if (selected === correctIndex) {
-    correctSound.play();
-    score++;
-  } else {
-    wrongSound.play();
+function resetState() {
+  clearInterval(timer);
+  timeLeft = 15;
+  timerDisplay.textContent = `Temps restant : ${timeLeft}s`;
+  nextBtn.classList.add('hidden');
+  while (answersContainer.firstChild) {
+    answersContainer.removeChild(answersContainer.firstChild);
   }
-
-  nextBtn.classList.remove("hidden");
-}
-
-function showFinalScore() {
-  outroAudio.play();
-  questionContainer.innerHTML = `
-    <h2>🎉 Quiz terminé !</h2>
-    <p>Score : ${score} / ${filteredQuestions.length}</p>
-    <p style="font-style: italic; margin-top: 10px;">${getRandomCitation()}</p>
-  `;
 }
 
 function startTimer() {
-  timerEl.textContent = `⏳ Temps : ${timeLeft}s`;
-  timerInterval = setInterval(() => {
+  timer = setInterval(() => {
     timeLeft--;
-    timerEl.textContent = `⏳ Temps : ${timeLeft}s`;
+    timerDisplay.textContent = `Temps restant : ${timeLeft}s`;
     if (timeLeft <= 0) {
-      clearInterval(timerInterval);
-      selectAnswer(-1, filteredQuestions[currentQuestionIndex].choices.indexOf(filteredQuestions[currentQuestionIndex].answer));
+      clearInterval(timer);
+      showCorrectAnswer();
+      nextBtn.classList.remove('hidden');
     }
   }, 1000);
 }
 
-function shuffleArray(arr) {
-  return [...arr].sort(() => Math.random() - 0.5);
+function selectAnswer(selectedChoice) {
+  clearInterval(timer);
+  const currentQuestion = shuffledQuestions[currentIndex];
+  const buttons = answersContainer.querySelectorAll('button');
+  buttons.forEach(button => {
+    button.disabled = true;
+    if (button.textContent === currentQuestion.answer) {
+      button.classList.add('correct');
+    }
+    if (button.textContent === selectedChoice && selectedChoice !== currentQuestion.answer) {
+      button.classList.add('incorrect');
+    }
+  });
+  if (selectedChoice === currentQuestion.answer) {
+    score++;
+  }
+  nextBtn.classList.remove('hidden');
 }
 
-function getRandomCitation() {
-  const index = Math.floor(Math.random() * citations.length);
-  return citations[index];
+function showCorrectAnswer() {
+  const currentQuestion = shuffledQuestions[currentIndex];
+  const buttons = answersContainer.querySelectorAll('button');
+  buttons.forEach(button => {
+    button.disabled = true;
+    if (button.textContent === currentQuestion.answer) {
+      button.classList.add('correct');
+    }
+  });
 }
 
-function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
+nextBtn.addEventListener('click', () => {
+  currentIndex++;
+  if (currentIndex < shuffledQuestions.length) {
+    showQuestion();
+    startTimer();
+  } else {
+    endQuiz();
+  }
+});
+
+startBtn.addEventListener('click', startQuiz);
+
+function endQuiz() {
+  resetState();
+  themeDisplay.textContent = "";
+  questionDisplay.textContent = `Quiz terminé ! Votre score : ${score} / ${shuffledQuestions.length}`;
+  answersContainer.innerHTML = "";
+  const citation = document.createElement('p');
+  citation.textContent = citations[Math.floor(Math.random() * citations.length)];
+  answersContainer.appendChild(citation);
+  nextBtn.classList.add('hidden');
+
+  const backToMenuBtn = document.createElement('button');
+  backToMenuBtn.textContent = "Retour au menu";
+  backToMenuBtn.addEventListener('click', () => {
+    quizContainer.classList.add('hidden');
+    menu.classList.remove('hidden');
+    themeSelect.value = "";
+    backToMenuBtn.remove();
+  });
+  answersContainer.appendChild(backToMenuBtn);
 }
