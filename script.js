@@ -390,6 +390,12 @@ function shuffleArray(arr) {
   return [...arr].sort(() => Math.random() - 0.5);
 }
 
+function getRandomCitation() {
+  const index = Math.floor(Math.random() * citations.length);
+  return citations[index];
+}
+
+
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
