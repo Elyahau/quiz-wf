@@ -137,46 +137,19 @@
       display: none !important;
     }
 
-    /* Animations */
-
     @keyframes glow {
-      0%, 100% {
-        box-shadow: 0 0 5px #23d997;
-      }
-      50% {
-        box-shadow: 0 0 20px #1aff73;
-      }
+      0%, 100% { box-shadow: 0 0 5px #23d997; }
+      50% { box-shadow: 0 0 20px #1aff73; }
     }
 
     @keyframes glitch {
-      0% {
-        clip: rect(0, 900px, 0, 0);
-        transform: translate(0);
-      }
-      10% {
-        clip: rect(0, 900px, 50px, 0);
-        transform: translate(-2px, -2px);
-      }
-      20% {
-        clip: rect(10px, 900px, 40px, 0);
-        transform: translate(2px, 2px);
-      }
-      30% {
-        clip: rect(20px, 900px, 30px, 0);
-        transform: translate(-2px, 2px);
-      }
-      40% {
-        clip: rect(30px, 900px, 20px, 0);
-        transform: translate(2px, -2px);
-      }
-      50% {
-        clip: rect(40px, 900px, 10px, 0);
-        transform: translate(0);
-      }
-      100% {
-        clip: rect(0, 900px, 0, 0);
-        transform: translate(0);
-      }
+      0% { clip: rect(0,900px,0,0); transform: translate(0); }
+      10% { clip: rect(0,900px,50px,0); transform: translate(-2px,-2px); }
+      20% { clip: rect(10px,900px,40px,0); transform: translate(2px,2px); }
+      30% { clip: rect(20px,900px,30px,0); transform: translate(-2px,2px); }
+      40% { clip: rect(30px,900px,20px,0); transform: translate(2px,-2px); }
+      50% { clip: rect(40px,900px,10px,0); transform: translate(0); }
+      100% { clip: rect(0,900px,0,0); transform: translate(0); }
     }
   </style>
 </head>
@@ -184,15 +157,12 @@
   <div class="container">
     <div id="menu">
       <h1>🌍 Quiz Environnement</h1>
-      <label for="theme-select">Choisis une thématique :</label><br />
-      <label for="mode-select" style="color:#00ffea; font-family:'Orbitron', sans-serif; margin-top:15px; display:block;">
-  Choisir le mode de jeu :
-</label>
-<select id="mode-select" style="background:#001f25; color:#00ffea; border:1px solid #00ffea; border-radius:5px; padding:6px;">
-  <option value="normal">Mode Normal (sans timer)</option>
-  <option value="battle">Mode Battle (avec timer)</option>
-</select>
-
+      <label for="mode-select" style="color:#00ffea;font-family:'Orbitron',sans-serif;margin-top:15px;display:block;">Choisir le mode de jeu :</label>
+      <select id="mode-select" style="background:#001f25;color:#00ffea;border:1px solid #00ffea;border-radius:5px;padding:6px;">
+        <option value="normal">Mode Normal</option>
+        <option value="battle">Mode Battle</option>
+      </select>
+      <label for="theme-select" style="display:block;margin-top:15px;">Choisis une thématique :</label>
       <select id="theme-select">
         <option value="">-- Choisir --</option>
         <option value="💧 Eau">💧 Eau</option>
@@ -203,29 +173,24 @@
         <option value="🗑️ Déchets">🗑️ Déchets</option>
         <option value="aleatoire">🎲 Aléatoire</option>
       </select><br />
-      <button id="start-btn" class="btn">Commencer le quiz</button>
+      <button id="start-btn">Commencer le quiz</button>
     </div>
 
     <div id="quiz-container" class="hidden">
       <div id="theme"></div>
       <div id="question" class="question"></div>
-      
-      <div id="timer-bar">
-        <div id="timer-progress"></div>
-      </div>
+      <div id="timer-bar"><div id="timer-progress"></div></div>
       <div id="timer"></div>
-      
       <div id="answers" class="answers"></div>
-      <button id="next-btn" class="btn hidden">Suivant</button>
+      <button id="next-btn" class="hidden">Suivant</button>
     </div>
 
     <div id="result-container" class="hidden">
       <p id="result-text"></p>
-      <button id="back-to-menu-btn" class="btn">Retour au menu</button>
+      <button id="back-to-menu-btn">Retour au menu</button>
     </div>
 
-    <button id="back-to-menu-during-quiz-btn" class="btn hidden">Retour au menu</button>
-
+    <button id="back-to-menu-during-quiz-btn" class="hidden">Retour au menu</button>
   </div>
 
   <script>
@@ -415,214 +380,79 @@
       }
     ];
 
-    const themeSelect = document.getElementById("theme-select");
-    const startBtn = document.getElementById("start-btn");
-    const menu = document.getElementById("menu");
-    const quizContainer = document.getElementById("quiz-container");
-    const themeDisplay = document.getElementById("theme");
-    const questionDisplay = document.getElementById("question");
-    const answersContainer = document.getElementById("answers");
-    const nextBtn = document.getElementById("next-btn");
-    const timerDisplay = document.getElementById("timer");
-    const timerProgress = document.getElementById("timer-progress");
-    const timerBar = document.getElementById("timer-bar");
-    const resultContainer = document.getElementById("result-container");
-    const resultText = document.getElementById("result-text");
-    const backToMenuBtn = document.getElementById("back-to-menu-btn");
-    const backToMenuDuringQuizBtn = document.getElementById("back-to-menu-during-quiz-btn");
+     const modeSelect=document.getElementById('mode-select');
+    const themeSelect=document.getElementById('theme-select');
+    const startBtn=document.getElementById('start-btn');
+    const menu=document.getElementById('menu');
+    const quizContainer=document.getElementById('quiz-container');
+    const themeDisplay=document.getElementById('theme');
+    const questionDisplay=document.getElementById('question');
+    const answersContainer=document.getElementById('answers');
+    const nextBtn=document.getElementById('next-btn');
+    const timerBar=document.getElementById('timer-bar');
+    const timerProgress=document.getElementById('timer-progress');
+    const timerDisplay=document.getElementById('timer');
+    const resultContainer=document.getElementById('result-container');
+    const resultText=document.getElementById('result-text');
+    const backToMenuBtn=document.getElementById('back-to-menu-btn');
+    const backToMenuDuringQuizBtn=document.getElementById('back-to-menu-during-quiz-btn');
 
-    let filteredQuestions = [];
-    let currentQuestionIndex = 0;
-    let score = 0;
-    let timerId;
-    let timeLeft = 20;
-    const MAX_TIME = 20;
+    let filteredQuestions=[],currentQuestionIndex=0,score=0,timerId,timeLeft,mode;
+    const MAX_TIME=20;
 
-    startBtn.addEventListener("click", () => {
-      const selectedTheme = themeSelect.value;
-      if (!selectedTheme) {
-        alert("Veuillez choisir une thématique !");
-        return;
-      }
-
-      score = 0;
-      currentQuestionIndex = 0;
-      if (selectedTheme === "aleatoire") {
-        filteredQuestions = [...questions];
-      } else {
-        filteredQuestions = questions.filter(q => q.theme === selectedTheme);
-      }
-
-      menu.classList.add("hidden");
-      quizContainer.classList.remove("hidden");
-      backToMenuDuringQuizBtn.classList.remove("hidden");
-      showQuestion();
-      startTimer();
-      updateThemeDisplay(selectedTheme);
+    startBtn.addEventListener('click',()=>{
+      mode=modeSelect.value;
+      const t=themeSelect.value;
+      if(!t){alert('Choisis une thématique !');return;}
+      filteredQuestions=t==='aleatoire'?[...questions]:questions.filter(q=>q.theme===t);
+      score=0;currentQuestionIndex=0;
+      menu.classList.add('hidden');quizContainer.classList.remove('hidden');
+      backToMenuDuringQuizBtn.classList.remove('hidden');
+      updateTheme(t);showQuestion();
     });
 
-    function updateThemeDisplay(theme) {
-      if (theme === "aleatoire") {
-        themeDisplay.textContent = "🎲 Thématique : Aléatoire";
-      } else {
-        themeDisplay.textContent = `Thématique : ${theme}`;
-      }
-    }
+    function updateTheme(t){themeDisplay.textContent=t==='aleatoire'? '🎲 Aléatoire':`Thématique : ${t}`;}
 
-    function showQuestion() {
-      clearTimer();
-
-      if (currentQuestionIndex >= filteredQuestions.length) {
-        showResult();
-        return;
-      }
-
-      const currentQuestion = filteredQuestions[currentQuestionIndex];
-      questionDisplay.textContent = currentQuestion.question;
-      answersContainer.innerHTML = "";
-
-      currentQuestion.choices.forEach(choice => {
-        const btn = document.createElement("button");
-        btn.textContent = choice;
-        btn.addEventListener("click", () => selectAnswer(choice));
-        answersContainer.appendChild(btn);
+    function showQuestion(){clearInterval(timerId);
+      if(currentQuestionIndex>=filteredQuestions.length){showResult();return;}
+      const q=filteredQuestions[currentQuestionIndex];
+      questionDisplay.textContent=q.question;
+      answersContainer.innerHTML='';
+      q.choices.forEach(c=>{const b=document.createElement('button');b.textContent=c;
+        b.disabled=false;b.addEventListener('click',()=>selectAnswer(c));answersContainer.appendChild(b);
       });
-
-      nextBtn.classList.add("hidden");
-      startTimer();
+      nextBtn.classList.add('hidden');
+      if(mode==='battle'){startTimer();timerBar.classList.remove('hidden');}else{timerBar.classList.add('hidden');}
     }
 
-    function selectAnswer(selected) {
-      clearTimer();
-
-      const currentQuestion = filteredQuestions[currentQuestionIndex];
-      const correct = currentQuestion.answer;
-
-      const buttons = answersContainer.querySelectorAll("button");
-      buttons.forEach(button => {
-        button.disabled = true;
-        if (button.textContent === correct) {
-          button.classList.add("correct");
-        }
-        if (button.textContent === selected && selected !== correct) {
-          button.classList.add("incorrect");
-        }
+    function selectAnswer(s){clearInterval(timerId);
+      const correct=filteredQuestions[currentQuestionIndex].answer;
+      answersContainer.querySelectorAll('button').forEach(b=>{b.disabled=true;
+        if(b.textContent===correct) b.classList.add('correct');
+        else if(b.textContent===s) b.classList.add('incorrect');
       });
-
-      if (selected === correct) {
-        score++;
-        playSound("correct");
-      } else {
-        playSound("incorrect");
-      }
-
-      nextBtn.classList.remove("hidden");
+      if(s===correct)score++;
+      nextBtn.classList.remove('hidden');
     }
 
-    nextBtn.addEventListener("click", () => {
-      currentQuestionIndex++;
-      showQuestion();
-    });
+    nextBtn.addEventListener('click',()=>{currentQuestionIndex++;showQuestion();});
 
-    backToMenuBtn.addEventListener("click", () => {
-      resetQuiz();
-    });
-
-    backToMenuDuringQuizBtn.addEventListener("click", () => {
-      if (confirm("Voulez-vous vraiment quitter le quiz ? Votre progression sera perdue.")) {
-        resetQuiz();
-      }
-    });
-
-    function showResult() {
-      quizContainer.classList.add("hidden");
-      backToMenuDuringQuizBtn.classList.add("hidden");
-      resultContainer.classList.remove("hidden");
-      resultText.textContent = `Quiz terminé ! Votre score : ${score} / ${filteredQuestions.length}`;
+    function showResult(){quizContainer.classList.add('hidden');backToMenuDuringQuizBtn.classList.add('hidden');
+      resultContainer.classList.remove('hidden');resultText.textContent=`Score : ${score}/${filteredQuestions.length}`;
     }
 
-    function resetQuiz() {
-      clearTimer();
-      score = 0;
-      currentQuestionIndex = 0;
-      filteredQuestions = [];
-      menu.classList.remove("hidden");
-      quizContainer.classList.add("hidden");
-      resultContainer.classList.add("hidden");
-      backToMenuDuringQuizBtn.classList.add("hidden");
-      themeSelect.value = "";
-      timerDisplay.textContent = "";
-      timerProgress.style.width = "100%";
-    }
+    backToMenuBtn.addEventListener('click',resetQuiz);
+    backToMenuDuringQuizBtn.addEventListener('click',()=>{if(confirm('Quitter ?'))resetQuiz();});
 
-    function startTimer() {
-      timeLeft = MAX_TIME;
-      timerDisplay.textContent = `⏳ Temps restant : ${timeLeft}s`;
-      timerProgress.style.width = "100%";
+    function resetQuiz(){clearInterval(timerId);menu.classList.remove('hidden');quizContainer.classList.add('hidden');
+      resultContainer.classList.add('hidden');backToMenuDuringQuizBtn.classList.add('hidden');
+      themeSelect.value='';timerDisplay.textContent='';timerProgress.style.width='100%';}
 
-      timerId = setInterval(() => {
-        timeLeft--;
-        timerDisplay.textContent = `⏳ Temps restant : ${timeLeft}s`;
-        timerProgress.style.width = (timeLeft / MAX_TIME) * 100 + "%";
-
-        if (timeLeft <= 0) {
-          clearInterval(timerId);
-          disableAnswers();
-          showCorrectAnswer();
-          nextBtn.classList.remove("hidden");
-          playSound("incorrect");
-        }
-      }, 1000);
-    }
-
-    function clearTimer() {
-      clearInterval(timerId);
-    }
-
-    function disableAnswers() {
-      const buttons = answersContainer.querySelectorAll("button");
-      buttons.forEach(button => (button.disabled = true));
-    }
-
-    function showCorrectAnswer() {
-      const currentQuestion = filteredQuestions[currentQuestionIndex];
-      const correct = currentQuestion.answer;
-
-      const buttons = answersContainer.querySelectorAll("button");
-      buttons.forEach(button => {
-        if (button.textContent === correct) {
-          button.classList.add("correct");
-        }
-      });
-    }
-
-    function playSound(type) {
-      try {
-        const ctx = new AudioContext();
-        const oscillator = ctx.createOscillator();
-        const gainNode = ctx.createGain();
-
-        oscillator.connect(gainNode);
-        gainNode.connect(ctx.destination);
-
-        if(type === 'correct') {
-          oscillator.frequency.value = 600; // Hz
-          gainNode.gain.value = 0.1;
-        } else {
-          oscillator.frequency.value = 200;
-          gainNode.gain.value = 0.15;
-        }
-
-        oscillator.type = 'square';
-        oscillator.start();
-
-        setTimeout(() => {
-          oscillator.stop();
-          ctx.close();
-        }, 150);
-      } catch (e) {
-        // AudioContext peut être bloqué par certains navigateurs sans interaction utilisateur
-      }
+    function startTimer(){timeLeft=MAX_TIME;timerProgress.style.width='100%';timerDisplay.textContent=`⏳ ${timeLeft}s`;
+      timerId=setInterval(()=>{timeLeft--;timerDisplay.textContent=`⏳ ${timeLeft}s`;
+        timerProgress.style.width=(timeLeft/MAX_TIME)*100+'%';
+        if(timeLeft<=0){clearInterval(timerId);selectAnswer('');}
+      },1000);
     }
   </script>
 </body>
