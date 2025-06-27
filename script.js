@@ -369,10 +369,18 @@ function selectAnswer(selected, correct) {
   nextBtn.classList.remove("hidden");
 }
 
+ const citationEl = document.createElement("p");
+citationEl.textContent = getRandomCitation();
+citationEl.style.fontStyle = "italic";
+citationEl.style.marginTop = "10px";
+answersEl.appendChild(citationEl);
+
 function showFinalScore() {
   outroAudio.play();
   questionContainer.innerHTML = `<h2>🎉 Quiz terminé !</h2><p>Score : ${score} / ${filteredQuestions.length}</p>`;
 }
+const citation = getRandomCitation();
+questionContainer.innerHTML += `<p style="font-style:italic; margin-top: 10px;">${citation}</p>`;
 
 function startTimer() {
   timerEl.textContent = `⏳ Temps : ${timeLeft}s`;
