@@ -264,136 +264,125 @@ const questions = [
 ];
 
 
+let selectedTheme = "";
+let filteredQuestions = [];
 let currentQuestionIndex = 0;
 let score = 0;
-let timer;
+let timerInterval;
 let timeLeft = 20;
-let shuffledQuestions = [];
 
-function shuffle(array) {
-  const copy = [...array];
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
+const startBtn = document.getElementById("start-btn");
+const nextBtn = document.getElementById("next-btn");
+const questionContainer = document.getElementById("quiz-container");
+const themeSelect = document.getElementById("theme-select");
+const questionEl = document.getElementById("question");
+const answersEl = document.getElementById("answers");
+const themeTitle = document.getElementById("theme");
+const timerEl = document.getElementById("timer");
+
+const introAudio = document.getElementById("introAudio");
+const outroAudio = document.getElementById("outroAudio");
+const correctSound = document.getElementById("correctSound");
+const wrongSound = document.getElementById("wrongSound");
+
+startBtn.addEventListener("click", () => {
+  selectedTheme = themeSelect.value;
+
+  if (!selectedTheme) {
+    alert("Merci de choisir une thématique !");
+    return;
   }
-  return copy;
-}
 
-function startQuiz() {
-  document.getElementById("introAudio").play();
-  document.getElementById("quiz-container").classList.remove("hidden");
-  document.getElementById("start-btn").classList.add("hidden");
+  introAudio.play();
+  filteredQuestions = selectedTheme === "aleatoire" ? shuffleArray(allQuestions) : allQuestions.filter(q => q.theme === selectedTheme);
 
-  shuffledQuestions = shuffle(questions).slice(0, 10);
+  if (filteredQuestions.length === 0) {
+    alert("Aucune question trouvée pour cette thématique.");
+    return;
+  }
+
   currentQuestionIndex = 0;
   score = 0;
+  questionContainer.classList.remove("hidden");
+  document.getElementById("menu-container").classList.add("hidden");
+  startBtn.classList.add("hidden");
+
   showQuestion();
-}
+});
 
-function showQuestion() {
-  clearInterval(timer);
-  timeLeft = 20;
-  updateTimerDisplay();
-
-  timer = setInterval(() => {
-    timeLeft--;
-    updateTimerDisplay();
-    if (timeLeft <= 0) {
-      clearInterval(timer);
-      nextQuestion();
-    }
-  }, 1000);
-
-  const questionObj = shuffledQuestions[currentQuestionIndex];
-  const questionEl = document.getElementById("question");
-  const answersEl = document.getElementById("answers");
-  const themeEl = document.getElementById("theme");
-
-  questionEl.textContent = questionObj.question;
-  themeEl.textContent = questionObj.theme;
-  answersEl.innerHTML = "";
-
-  const mixedChoices = shuffle(questionObj.choices);
-
-  mixedChoices.forEach((choice) => {
-    const button = document.createElement("button");
-    button.textContent = choice;
-    button.onclick = () => selectAnswer(choice);
-    answersEl.appendChild(button);
-  });
-
-  document.getElementById("next-btn").classList.add("hidden");
-}
-
-function nextQuestion() {
-  clearInterval(timer);
+nextBtn.addEventListener("click", () => {
   currentQuestionIndex++;
-  document.getElementById("next-btn").classList.add("hidden");
-
-  if (currentQuestionIndex < shuffledQuestions.length) {
+  if (currentQuestionIndex < filteredQuestions.length) {
     showQuestion();
   } else {
-    showScore();
+    showFinalScore();
   }
+});
+
+function showQuestion() {
+  clearInterval(timerInterval);
+  timeLeft = 20;
+  startTimer();
+
+  const current = filteredQuestions[currentQuestionIndex];
+  themeTitle.textContent = `Thématique : ${capitalize(current.theme)}`;
+  questionEl.textContent = current.question;
+  answersEl.innerHTML = "";
+  nextBtn.classList.add("hidden");
+
+  current.answers.forEach((answer, index) => {
+    const btn = document.createElement("button");
+    btn.textContent = answer;
+    btn.addEventListener("click", () => selectAnswer(index, current.correct));
+    answersEl.appendChild(btn);
+  });
 }
 
-function selectAnswer(selectedChoice) {
-  const correct = shuffledQuestions[currentQuestionIndex].answer;
+function selectAnswer(selected, correct) {
+  clearInterval(timerInterval);
+  const buttons = answersEl.querySelectorAll("button");
 
-  clearInterval(timer);
-  document.getElementById("next-btn").classList.remove("hidden");
-
-  if (selectedChoice === correct) {
-    score++;
-    document.getElementById("correctSound").play();
-  } else {
-    document.getElementById("wrongSound").play();
-  }
-
-  const buttons = document.querySelectorAll("#answers button");
-  buttons.forEach((btn) => {
+  buttons.forEach((btn, index) => {
     btn.disabled = true;
-    if (btn.textContent === correct) {
+    if (index === correct) {
       btn.classList.add("correct");
-    } else if (btn.textContent === selectedChoice) {
+    }
+    if (index === selected && selected !== correct) {
       btn.classList.add("incorrect");
     }
   });
+
+  if (selected === correct) {
+    correctSound.play();
+    score++;
+  } else {
+    wrongSound.play();
+  }
+
+  nextBtn.classList.remove("hidden");
 }
 
-function updateTimerDisplay() {
-  document.getElementById("timer").textContent = `⏰ Temps restant : ${timeLeft} sec`;
+function showFinalScore() {
+  outroAudio.play();
+  questionContainer.innerHTML = `<h2>🎉 Quiz terminé !</h2><p>Score : ${score} / ${filteredQuestions.length}</p>`;
 }
 
-function showScore() {
-  clearInterval(timer);
-  const container = document.getElementById("quiz-container");
-  container.innerHTML = `
-    <h2>Ton score est ${score} sur ${shuffledQuestions.length}.</h2>
-    <button id="restart-btn">Rejouer</button>
-  `;
-
-  document.getElementById("restart-btn").addEventListener("click", restartQuiz);
-  document.getElementById("outroAudio").play();
+function startTimer() {
+  timerEl.textContent = `⏳ Temps : ${timeLeft}s`;
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    timerEl.textContent = `⏳ Temps : ${timeLeft}s`;
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      selectAnswer(-1, filteredQuestions[currentQuestionIndex].correct);
+    }
+  }, 1000);
 }
 
-function restartQuiz() {
-  currentQuestionIndex = 0;
-  score = 0;
-  shuffledQuestions = shuffle(questions).slice(0, 10);
-  const container = document.getElementById("quiz-container");
-  container.classList.remove("hidden");
-  container.innerHTML = `
-    <div id="theme" style="font-weight: bold; margin-bottom: 10px;"></div>
-    <div id="question" style="font-size: 20px; margin-bottom: 15px;"></div>
-    <div id="answers"></div>
-    <div id="timer" style="font-weight:bold; margin-top:10px; color:#2c6e49;"></div>
-    <button id="next-btn" class="hidden">Suivante</button>
-  `;
-
-  document.getElementById("next-btn").addEventListener("click", nextQuestion);
-  showQuestion();
+function shuffleArray(arr) {
+  return [...arr].sort(() => Math.random() - 0.5);
 }
 
-document.getElementById("start-btn").addEventListener("click", startQuiz);
-document.getElementById("next-btn").addEventListener("click", nextQuestion);
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
