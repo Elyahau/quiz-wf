@@ -282,10 +282,12 @@ const themeDisplay = document.getElementById("theme");
 const questionDisplay = document.getElementById("question");
 const answersContainer = document.getElementById("answers");
 const timerDisplay = document.getElementById("timer");
+const timerBar = document.getElementById("timer-bar");
 const timerProgress = document.getElementById("timer-progress");
 const backToMenuDuringQuizBtn = document.getElementById("back-to-menu-during-quiz-btn");
 const resultContainer = document.getElementById("result-container");
 const resultText = document.getElementById("result-text");
+const citationDisplay = document.getElementById("citation");
 const backToMenuBtn = document.getElementById("back-to-menu-btn");
 
 let shuffledQuestions = [];
@@ -296,130 +298,125 @@ let timeLeft;
 let currentMode = "normal";
 const MAX_TIME = 20;
 
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
   }
 }
 
-startBtn.addEventListener("click", () => {
-  const theme = themeSelect.value;
-  if (!theme) return alert("Veuillez choisir une thématique !");
+startBtn.addEventListener("click",()=>{
+  const t = themeSelect.value;
+  if(!t) return alert("Choisis une thématique !");
   currentMode = modeSelect.value;
   score = 0;
   currentQuestionIndex = 0;
-  if (theme === "aleatoire") shuffledQuestions = [...questions];
-  else shuffledQuestions = questions.filter(q => q.theme === theme);
+  shuffledQuestions = t==="aleatoire" ? [...questions] : questions.filter(q=>q.theme===t);
   shuffle(shuffledQuestions);
   menu.classList.add("hidden");
   quizContainer.classList.remove("hidden");
   backToMenuDuringQuizBtn.classList.remove("hidden");
-  updateThemeDisplay(theme);
+  citationDisplay.textContent = "";
+  updateTheme();
   showQuestion();
 });
 
-function updateThemeDisplay(theme) {
-  themeDisplay.textContent = theme === "aleatoire"
-    ? "🎲 Thématique : Aléatoire"
-    : `Thématique : ${theme}`;
+function updateTheme(){
+  const t = themeSelect.value;
+  themeDisplay.textContent = t==="aleatoire" ? "🎲 Thématique : Aléatoire" : `Thématique : ${t}`;
 }
 
-function startTimer() {
-  if (currentMode === "normal") {
-    timerDisplay.style.display = "none";
+function startTimer(){
+  if(currentMode==="normal"){
+    timerDisplay.style.display="none";
+    timerBar.classList.add("hidden");
     return;
   }
-  timerDisplay.style.display = "block";
+  timerDisplay.style.display="block";
+  timerBar.classList.remove("hidden");
   timeLeft = MAX_TIME;
-  timerProgress.style.width = "100%";
-  timerDisplay.textContent = `⏳ Temps restant : ${timeLeft}s`;
-  timerId = setInterval(() => {
+  timerProgress.style.width="100%";
+  timerDisplay.textContent = `⏳ Temps : ${timeLeft}s`;
+  timerId = setInterval(()=>{
     timeLeft--;
-    timerDisplay.textContent = `⏳ Temps restant : ${timeLeft}s`;
-    timerProgress.style.width = `${(timeLeft / MAX_TIME) * 100}%`;
-    if (timeLeft <= 0) {
+    timerDisplay.textContent = `⏳ Temps : ${timeLeft}s`;
+    timerProgress.style.width = `${(timeLeft/MAX_TIME)*100}%`;
+    if(timeLeft<=0){
       clearInterval(timerId);
       disableAnswers();
       revealCorrect();
       nextBtn.classList.remove("hidden");
     }
-  }, 1000);
+  },1000);
 }
 
-function clearTimer() {
+function clearTimer(){
   clearInterval(timerId);
 }
 
-function showQuestion() {
+function showQuestion(){
   clearTimer();
-  answersContainer.innerHTML = "";
+  answersContainer.innerHTML="";
   nextBtn.classList.add("hidden");
+  if(currentQuestionIndex>=shuffledQuestions.length){
+    showResult();
+    return;
+  }
   const q = shuffledQuestions[currentQuestionIndex];
   questionDisplay.textContent = q.question;
   startTimer();
-  q.choices.forEach(choice => {
+  q.choices.forEach(c=>{
     const btn = document.createElement("button");
-    btn.textContent = choice;
-    btn.addEventListener("click", () => selectAnswer(choice));
+    btn.textContent = c;
+    btn.addEventListener("click",()=>selectAnswer(c));
     answersContainer.appendChild(btn);
   });
 }
 
-function selectAnswer(chosen) {
+function selectAnswer(choice){
   clearTimer();
   const correct = shuffledQuestions[currentQuestionIndex].answer;
-  Array.from(answersContainer.children).forEach(btn => {
-    btn.disabled = true;
-    if (btn.textContent === correct) btn.classList.add("correct");
-    if (btn.textContent === chosen && chosen !== correct) btn.classList.add("incorrect");
+  Array.from(answersContainer.children).forEach(b=>{
+    b.disabled = true;
+    if(b.textContent===correct) b.classList.add("correct");
+    if(b.textContent===choice && choice!==correct) b.classList.add("incorrect");
   });
-  if (chosen === correct) score++;
+  if(choice===correct) score++;
   nextBtn.classList.remove("hidden");
 }
 
-nextBtn.addEventListener("click", () => {
+nextBtn.addEventListener("click",()=>{
   currentQuestionIndex++;
-  if (currentQuestionIndex < shuffledQuestions.length) showQuestion();
-  else showResult();
+  showQuestion();
 });
 
-function showResult() {
+function showResult(){
   quizContainer.classList.add("hidden");
   backToMenuDuringQuizBtn.classList.add("hidden");
   resultContainer.classList.remove("hidden");
-  resultText.textContent = `Quiz terminé ! Votre score : ${score} / ${shuffledQuestions.length}`;
-
-  const oldCitation = resultContainer.querySelector(".citation");
-  if (oldCitation) oldCitation.remove();
-
-  const cite = citations[Math.floor(Math.random() * citations.length)];
-  const p = document.createElement("p");
-  p.classList.add("citation");
-  p.style.fontStyle = "italic";
-  p.style.marginTop = "10px";
-  p.textContent = cite;
-  resultContainer.appendChild(p);
+  resultText.textContent = `Quiz terminé ! Score : ${score} / ${shuffledQuestions.length}`;
+  const quote = citations[Math.floor(Math.random()*citations.length)];
+  citationDisplay.textContent = quote;
 }
 
-function disableAnswers() {
-  Array.from(answersContainer.children).forEach(btn => btn.disabled = true);
+function disableAnswers(){
+  Array.from(answersContainer.children).forEach(b=>b.disabled=true);
 }
 
-function revealCorrect() {
+function revealCorrect(){
   const correct = shuffledQuestions[currentQuestionIndex].answer;
   Array.from(answersContainer.children)
-    .find(btn => btn.textContent === correct)
+    .find(b=>b.textContent===correct)
     .classList.add("correct");
 }
 
-backToMenuDuringQuizBtn.addEventListener("click", () => {
-  if (confirm("Quitter le quiz et perdre la progression ?")) resetQuiz();
+backToMenuDuringQuizBtn.addEventListener("click",()=>{
+  if(confirm("Abandonner le quiz ?")) resetQuiz();
 });
 
-backToMenuBtn.addEventListener("click", resetQuiz);
+backToMenuBtn.addEventListener("click",resetQuiz);
 
-function resetQuiz() {
+function resetQuiz(){
   clearTimer();
   score = 0;
   currentQuestionIndex = 0;
@@ -428,7 +425,7 @@ function resetQuiz() {
   quizContainer.classList.add("hidden");
   resultContainer.classList.add("hidden");
   backToMenuDuringQuizBtn.classList.add("hidden");
+  timerDisplay.style.display="block";
+  citationDisplay.textContent = "";
   themeSelect.value = "";
-  const oldCitation = resultContainer.querySelector(".citation");
-  if (oldCitation) oldCitation.remove();
 }
