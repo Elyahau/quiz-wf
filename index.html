@@ -397,52 +397,156 @@
     const themeSelect = document.getElementById('theme-select');
     const startBtn = document.getElementById('start-btn');
 
-    let filteredQuestions=[],currentQuestionIndex=0,score=0,timerId,timeLeft,mode;
-    const MAX_TIME=20;
+    // Event listeners
+    startBtn.addEventListener('click', startQuiz);
+    nextBtn.addEventListener('click', () => {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < filteredQuestions.length) {
+        setNextQuestion();
+      } else {
+        endQuiz();
+      }
+    });
+    backToMenuBtn.addEventListener('click', resetQuiz);
+    backToMenuDuringQuizBtn.addEventListener('click', resetQuiz);
 
-    startBtn.addEventListener('click',()=>{
-      mode=modeSelect.value;
-      const t=themeSelect.value;
-      if(!t){alert('Choisis une thématique !');return;}
-      filteredQuestions=t==='aleatoire'?[...questions]:questions.filter(q=>q.theme===t);
-      score=0;currentQuestionIndex=0;
-      menu.classList.add('hidden');quizContainer.classList.remove('hidden');
-      backToMenuDuringQuizBtn.classList.remove('hidden');
-      updateTheme(t);showQuestion();
+    modeSelect.addEventListener('change', e => {
+      selectedMode = e.target.value;
     });
 
-    function updateTheme(t){themeDisplay.textContent=t==='aleatoire'? '🎲 Aléatoire':`Thématique : ${t}`;}
+    themeSelect.addEventListener('change', e => {
+      selectedTheme = e.target.value;
+    });
 
-    function showQuestion(){clearInterval(timerId);
-      if(currentQuestionIndex>=filteredQuestions.length){showResult();return;}
-      const q=filteredQuestions[currentQuestionIndex];
-      questionDisplay.textContent=q.question;
-      answersContainer.innerHTML='';
-      q.choices.forEach(c=>{const b=document.createElement('button');b.textContent=c;
-        b.disabled=false;b.addEventListener('click',()=>selectAnswer(c));answersContainer.appendChild(b);
+    // Filtrer les questions selon le thème choisi
+    let filteredQuestions = [];
+
+    function startQuiz() {
+      // Valider la sélection du thème
+      if (selectedTheme === "") {
+        alert("Veuillez choisir une thématique.");
+        return;
+      }
+
+      menu.classList.add('hidden');
+      resultContainer.classList.add('hidden');
+      quizContainer.classList.remove('hidden');
+      backToMenuDuringQuizBtn.classList.remove('hidden');
+
+      currentQuestionIndex = 0;
+      score = 0;
+
+      // Filtrer les questions
+      if (selectedTheme === "aleatoire") {
+        filteredQuestions = [...questions].sort(() => Math.random() - 0.5);
+      } else {
+        filteredQuestions = questions.filter(q => q.theme === selectedTheme);
+      }
+
+      setNextQuestion();
+    }
+
+    function setNextQuestion() {
+      resetState();
+      showQuestion(filteredQuestions[currentQuestionIndex]);
+      startTimer();
+    }
+
+    function showQuestion(questionObj) {
+      themeDisplay.textContent = questionObj.theme;
+      questionEl.textContent = questionObj.question;
+      answersEl.innerHTML = '';
+
+      questionObj.choices.forEach(choice => {
+        const button = document.createElement('button');
+        button.textContent = choice;
+        button.addEventListener('click', () => selectAnswer(button, questionObj.answer));
+        answersEl.appendChild(button);
       });
+    }
+
+    function resetState() {
+      clearStatusClass(document.body);
       nextBtn.classList.add('hidden');
-      if(mode==='battle'){startTimer();timerBar.classList.remove('hidden');}else{timerBar.classList.add('hidden');}
+      while (answersEl.firstChild) {
+        answersEl.removeChild(answersEl.firstChild);
+      }
+      clearInterval(timerInterval);
+      timeLeft = timePerQuestion;
+      updateTimerUI();
     }
 
-    function selectAnswer(s){clearInterval(timerId);
-      const correct=filteredQuestions[currentQuestionIndex].answer;
-      answersContainer.querySelectorAll('button').forEach(b=>{b.disabled=true;
-        if(b.textContent===correct) b.classList.add('correct');
-        else if(b.textContent===s) b.classList.add('incorrect');
+    function selectAnswer(selectedButton, correctAnswer) {
+      clearInterval(timerInterval);
+      const buttons = answersEl.querySelectorAll('button');
+
+      buttons.forEach(button => {
+        setStatusClass(button, button.textContent === correctAnswer);
+        button.disabled = true;
       });
-      if(s===correct)score++;
+
+      if (selectedButton.textContent === correctAnswer) {
+        score++;
+      }
+
       nextBtn.classList.remove('hidden');
+
+      if (selectedMode === 'battle') {
+        nextBtn.textContent = "Suivant";
+      } else {
+        // En mode normal, on peut passer automatiquement au suivant
+        setTimeout(() => {
+          currentQuestionIndex++;
+          if (currentQuestionIndex < filteredQuestions.length) {
+            setNextQuestion();
+          } else {
+            endQuiz();
+          }
+        }, 1500);
+      }
     }
 
-    nextBtn.addEventListener('click',()=>{currentQuestionIndex++;showQuestion();});
-
-    function showResult(){quizContainer.classList.add('hidden');backToMenuDuringQuizBtn.classList.add('hidden');
-      resultContainer.classList.remove('hidden');resultText.textContent=`Score : ${score}/${filteredQuestions.length}`;
+    function setStatusClass(element, correct) {
+      clearStatusClass(element);
+      if (correct) {
+        element.classList.add('correct');
+      } else {
+        element.classList.add('incorrect');
+      }
     }
 
-    backToMenuBtn.addEventListener('click',resetQuiz);
-    backToMenuDuringQuizBtn.addEventListener('click',()=>{if(confirm('Quitter ?'))resetQuiz();});
+    function clearStatusClass(element) {
+      element.classList.remove('correct');
+      element.classList.remove('incorrect');
+    }
+
+    function startTimer() {
+      timeLeft = timePerQuestion;
+      updateTimerUI();
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerUI();
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          // Révéler la bonne réponse
+          const correctAnswer = filteredQuestions[currentQuestionIndex].answer;
+          const buttons = answersEl.querySelectorAll('button');
+          buttons.forEach(button => {
+            if (button.textContent === correctAnswer) {
+              setStatusClass(button, true);
+            }
+            button.disabled = true;
+          });
+          nextBtn.classList.remove('hidden');
+        }
+      }, 1000);
+    }
+
+    function updateTimerUI() {
+      timerEl.textContent = `Temps restant : ${timeLeft}s`;
+      const percentage = (timeLeft / timePerQuestion) * 100;
+      timerBar.style.width = percentage + '%';
+    }
 
     function endQuiz() {
       quizContainer.classList.add('hidden');
@@ -466,15 +570,18 @@
       document.getElementById('result-text').textContent = `Vous avez obtenu ${score} bonnes réponses sur ${total} (${percent}%). ${message}`;
       document.getElementById('citation').textContent = '“La Terre ne nous appartient pas, nous l’empruntons à nos enfants.” – Antoine de Saint-Exupéry';
     }
-    function resetQuiz(){clearInterval(timerId);menu.classList.remove('hidden');quizContainer.classList.add('hidden');
-      resultContainer.classList.add('hidden');backToMenuDuringQuizBtn.classList.add('hidden');
-      themeSelect.value='';timerDisplay.textContent='';timerProgress.style.width='100%';}
 
-    function startTimer(){timeLeft=MAX_TIME;timerProgress.style.width='100%';timerDisplay.textContent=`⏳ ${timeLeft}s`;
-      timerId=setInterval(()=>{timeLeft--;timerDisplay.textContent=`⏳ ${timeLeft}s`;
-        timerProgress.style.width=(timeLeft/MAX_TIME)*100+'%';
-        if(timeLeft<=0){clearInterval(timerId);selectAnswer('');}
-      },1000);
+    function resetQuiz() {
+      clearInterval(timerInterval);
+      quizContainer.classList.add('hidden');
+      resultContainer.classList.add('hidden');
+      menu.classList.remove('hidden');
+      backToMenuDuringQuizBtn.classList.add('hidden');
+      nextBtn.classList.add('hidden');
+      score = 0;
+      currentQuestionIndex = 0;
+      timerEl.textContent = '';
+      timerBar.style.width = '100%';
     }
   </script>
 </body>
