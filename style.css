@@ -167,4 +167,10 @@ button.incorrect {
     font-size: 1rem;
     padding: 10px 14px;
   }
+  .citation {
+  margin: 1rem 0;
+  font-style: italic;
+  color: #00ddb7;
+  text-shadow: 0 0 4px #00ddb7;
+}
 }
