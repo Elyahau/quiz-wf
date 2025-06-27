@@ -301,7 +301,9 @@ startBtn.addEventListener("click", () => {
   }
 
   introAudio.play();
-  filteredQuestions = selectedTheme === "aleatoire" ? shuffleArray(allQuestions) : allQuestions.filter(q => q.theme === selectedTheme);
+  filteredQuestions = selectedTheme === "aleatoire"
+    ? shuffleArray(questions)
+    : questions.filter(q => q.theme === selectedTheme);
 
   if (filteredQuestions.length === 0) {
     alert("Aucune question trouvée pour cette thématique.");
@@ -310,9 +312,9 @@ startBtn.addEventListener("click", () => {
 
   currentQuestionIndex = 0;
   score = 0;
-  questionContainer.classList.remove("hidden");
   document.getElementById("menu-container").classList.add("hidden");
   startBtn.classList.add("hidden");
+  questionContainer.classList.remove("hidden");
 
   showQuestion();
 });
@@ -337,29 +339,36 @@ function showQuestion() {
   answersEl.innerHTML = "";
   nextBtn.classList.add("hidden");
 
-  current.answers.forEach((answer, index) => {
+  current.choices.forEach((choice, index) => {
     const btn = document.createElement("button");
-    btn.textContent = answer;
-    btn.addEventListener("click", () => selectAnswer(index, current.correct));
+    btn.textContent = choice;
+    btn.addEventListener("click", () => selectAnswer(index, current.choices.indexOf(current.answer)));
     answersEl.appendChild(btn);
   });
+
+  // Ajouter citation sous la question
+  const citationEl = document.createElement("p");
+  citationEl.textContent = getRandomCitation();
+  citationEl.style.fontStyle = "italic";
+  citationEl.style.marginTop = "10px";
+  answersEl.appendChild(citationEl);
 }
 
-function selectAnswer(selected, correct) {
+function selectAnswer(selected, correctIndex) {
   clearInterval(timerInterval);
   const buttons = answersEl.querySelectorAll("button");
 
   buttons.forEach((btn, index) => {
     btn.disabled = true;
-    if (index === correct) {
+    if (index === correctIndex) {
       btn.classList.add("correct");
     }
-    if (index === selected && selected !== correct) {
+    if (index === selected && selected !== correctIndex) {
       btn.classList.add("incorrect");
     }
   });
 
-  if (selected === correct) {
+  if (selected === correctIndex) {
     correctSound.play();
     score++;
   } else {
@@ -369,18 +378,14 @@ function selectAnswer(selected, correct) {
   nextBtn.classList.remove("hidden");
 }
 
- const citationEl = document.createElement("p");
-citationEl.textContent = getRandomCitation();
-citationEl.style.fontStyle = "italic";
-citationEl.style.marginTop = "10px";
-answersEl.appendChild(citationEl);
-
 function showFinalScore() {
   outroAudio.play();
-  questionContainer.innerHTML = `<h2>🎉 Quiz terminé !</h2><p>Score : ${score} / ${filteredQuestions.length}</p>`;
+  questionContainer.innerHTML = `
+    <h2>🎉 Quiz terminé !</h2>
+    <p>Score : ${score} / ${filteredQuestions.length}</p>
+    <p style="font-style: italic; margin-top: 10px;">${getRandomCitation()}</p>
+  `;
 }
-const citation = getRandomCitation();
-questionContainer.innerHTML += `<p style="font-style:italic; margin-top: 10px;">${citation}</p>`;
 
 function startTimer() {
   timerEl.textContent = `⏳ Temps : ${timeLeft}s`;
@@ -389,7 +394,7 @@ function startTimer() {
     timerEl.textContent = `⏳ Temps : ${timeLeft}s`;
     if (timeLeft <= 0) {
       clearInterval(timerInterval);
-      selectAnswer(-1, filteredQuestions[currentQuestionIndex].correct);
+      selectAnswer(-1, filteredQuestions[currentQuestionIndex].choices.indexOf(filteredQuestions[currentQuestionIndex].answer));
     }
   }, 1000);
 }
@@ -402,7 +407,6 @@ function getRandomCitation() {
   const index = Math.floor(Math.random() * citations.length);
   return citations[index];
 }
-
 
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
