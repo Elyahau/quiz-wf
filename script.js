@@ -475,7 +475,13 @@ function nextQuestion() {
     endQuiz();
   }
 }
-
+function showResult() {
+  questionContainer.classList.add('hidden');
+  backToMenuDuringQuizBtn.classList.add('hidden');
+  resultContainer.classList.remove('hidden');
+  resultText.textContent = `Quiz terminé ! Votre score : ${score} / ${filteredQuestions.length}`;
+  citationEl.textContent = citations[Math.floor(Math.random() * citations.length)];
+}
 function endQuiz() {
   resetState();
   timerDisplay.textContent = "";
