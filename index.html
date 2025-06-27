@@ -1,53 +1,400 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Quiz Climat - Wallis & Futuna</title>
-  <link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="icons/icon-192.png" />
-  <meta name="theme-color" content="#2c6e49" />
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>Quiz Écologie</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f0f4f8;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 2rem;
+    }
+    h1 {
+      color: #2b6cb0;
+    }
+    select, button {
+      font-size: 1rem;
+      padding: 0.5rem;
+      margin-top: 1rem;
+    }
+    .hidden {
+      display: none;
+    }
+    .question {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    .answers button {
+      display: block;
+      width: 100%;
+      margin: 0.3rem 0;
+      padding: 0.5rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background: #e2e8f0;
+    }
+    .answers button.correct {
+      background: #38a169;
+      color: white;
+    }
+    .answers button.incorrect {
+      background: #e53e3e;
+      color: white;
+    }
+    #timer {
+      margin: 1rem 0;
+      font-weight: bold;
+      color: #2d3748;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>🌱 Quiz Environnement - Wallis & Futuna</h1>
-  </header>
-
-  <div id="menu">
-    <h2>Bienvenue dans le Quiz Climat 🌱</h2>
-    <p>Testez vos connaissances sur l'environnement à Wallis-et-Futuna.</p>
-
-    <div id="menu-container">
-      <h2>Choisis une thématique</h2>
+  <div class="container">
+    <div id="menu">
+      <h1>🌍 Quiz Environnement</h1>
+      <label for="theme-select">Choisis une thématique :</label><br>
       <select id="theme-select">
-        <option value="">-- Sélectionne une thématique --</option>
-        <option value="eau">💧 Eau</option>
-        <option value="biodiversite">🦋 Biodiversité</option>
-        <option value="climat">🌍 Climat</option>
-        <option value="energie">⚡ Énergie</option>
-        <option value="dechets">🗑️ Déchets</option>
-        <option value="wf">🌴 Wallis & Futuna</option>
+        <option value="">-- Choisir --</option>
+        <option value="💧 Eau">💧 Eau</option>
+        <option value="🌤️ Climat">🌤️ Climat</option>
+        <option value="🌱 Biodiversité">🌱 Biodiversité</option>
+        <option value="♻️ Impacts sur Wallis et Futuna">♻️ Impacts sur Wallis et Futuna</option>
+        <option value="⚡ Énergie">⚡ Énergie</option>
+        <option value="🗑️ Déchets">🗑️ Déchets</option>
         <option value="aleatoire">🎲 Aléatoire</option>
-      </select>
+      </select><br>
+      <button id="start-btn">Démarrer le quiz</button>
     </div>
 
-    <button id="start-btn">🎮 Démarrer le quiz</button>
+    <div id="quiz-container" class="hidden">
+      <div id="theme"></div>
+      <div id="timer"></div>
+      <div id="question" class="question"></div>
+      <div id="answers" class="answers"></div>
+      <button id="next-btn" class="hidden">Question suivante</button>
+    </div>
   </div>
 
-  <main id="quiz-container" class="hidden">
-    <div id="theme" class="theme"></div>
-    <div id="question" class="question"></div>
-    <div id="answers" class="answers"></div>
-    <div id="timer" class="timer"></div>
-    <button id="next-btn" class="hidden">Suivante</button>
-  </main>
+  <script>
+    const questions = [
+      {
+        theme: "💧 Eau",
+        question: "💧 Eau — Question 13 : Qu’est-ce que le cycle de l’eau ?",
+        choices: [
+          "Le trajet de l’eau dans les tuyaux",
+          "La circulation de l’eau entre mer, atmosphère et terres",
+          "Le processus de traitement de l’eau potable",
+          "Le recyclage de l’eau usée"
+        ],
+        answer: "La circulation de l’eau entre mer, atmosphère et terres"
+      },
+      {
+        theme: "💧 Eau",
+        question: "💧 Eau — Question 14 : Quelle proportion de l’eau douce est accessible pour la consommation humaine ?",
+        choices: ["90%", "70%", "30%", "10%"],
+        answer: "10%"
+      },
+      {
+        theme: "💧 Eau",
+        question: "💧 Eau — Question 15 : Quel est l’effet d’une agriculture intensive sur l’eau ?",
+        choices: [
+          "Augmentation de la qualité",
+          "Pollution par pesticides et engrais",
+          "Diminution de la consommation",
+          "Amélioration de la biodiversité"
+        ],
+        answer: "Pollution par pesticides et engrais"
+      },
+      {
+        theme: "🌤️ Climat",
+        question: "🌤️ Climat — Question 1 : Qu'est-ce que l'effet de serre ?",
+        choices: [
+          "Le réchauffement causé par les gaz à effet de serre",
+          "La réduction de la couche d'ozone",
+          "Le refroidissement de l'atmosphère",
+          "Une tempête tropicale"
+        ],
+        answer: "Le réchauffement causé par les gaz à effet de serre"
+      },
+      {
+        theme: "🌤️ Climat",
+        question: "🌤️ Climat — Question 2 : Quel est le principal gaz à effet de serre produit par l'activité humaine ?",
+        choices: [
+          "Oxygène",
+          "Dioxyde de carbone (CO2)",
+          "Azote",
+          "Méthane"
+        ],
+        answer: "Dioxyde de carbone (CO2)"
+      },
+      {
+        theme: "🌤️ Climat",
+        question: "🌤️ Climat — Question 3 : Quelle conséquence du réchauffement climatique menace les zones côtières ?",
+        choices: [
+          "Augmentation des inondations",
+          "Augmentation de la biodiversité",
+          "Refroidissement des océans",
+          "Stabilisation du climat"
+        ],
+        answer: "Augmentation des inondations"
+      },
+      {
+        theme: "🌤️ Climat",
+        question: "🌤️ Climat — Question 4 : Quelle énergie est renouvelable et ne produit pas de CO2 ?",
+        choices: [
+          "Charbon",
+          "Pétrole",
+          "Solaire",
+          "Gaz naturel"
+        ],
+        answer: "Solaire"
+      },
+      {
+        theme: "🌤️ Climat",
+        question: "🌤️ Climat — Question 5 : Quelle mesure aide à réduire les émissions de gaz à effet de serre ?",
+        choices: [
+          "Augmenter la consommation d'énergie",
+          "Planter des arbres",
+          "Augmenter l'utilisation des voitures",
+          "Déforester"
+        ],
+        answer: "Planter des arbres"
+      },
+      {
+        theme: "🌱 Biodiversité",
+        question: "🌱 Biodiversité — Question 1 : Qu'est-ce que la biodiversité ?",
+        choices: [
+          "La diversité des espèces vivantes",
+          "Le climat",
+          "La pollution",
+          "Les énergies renouvelables"
+        ],
+        answer: "La diversité des espèces vivantes"
+      },
+      {
+        theme: "🌱 Biodiversité",
+        question: "🌱 Biodiversité — Question 2 : Quelle est une cause majeure de la perte de biodiversité ?",
+        choices: [
+          "La pollution de l’air",
+          "La déforestation",
+          "Le recyclage",
+          "La conservation"
+        ],
+        answer: "La déforestation"
+      },
+      {
+        theme: "♻️ Impacts sur Wallis et Futuna",
+        question: "♻️ Wallis et Futuna — Question 1 : Quelle ressource naturelle est la plus menacée à Wallis et Futuna ?",
+        choices: [
+          "Le corail",
+          "Le pétrole",
+          "Le charbon",
+          "Le sable"
+        ],
+        answer: "Le corail"
+      },
+      {
+        theme: "⚡ Énergie",
+        question: "⚡ Énergie — Question 1 : Quelle source d'énergie est renouvelable ?",
+        choices: [
+          "Charbon",
+          "Solaire",
+          "Pétrole",
+          "Gaz naturel"
+        ],
+        answer: "Solaire"
+      },
+      {
+        theme: "🗑️ Déchets",
+        question: "🗑️ Déchets — Question 1 : Quel déchet peut être recyclé ?",
+        choices: [
+          "Verre",
+          "Déchets organiques",
+          "Déchets non recyclables",
+          "Déchets électroniques"
+        ],
+        answer: "Verre"
+      }
+    ];
 
-  <audio id="introAudio" src="audio/intro.mp3" preload="auto"></audio>
-  <audio id="outroAudio" src="audio/outro.mp3" preload="auto"></audio>
-  <audio id="correctSound" src="audio/correct.mp3" preload="auto"></audio>
-  <audio id="wrongSound" src="audio/wrong.mp3" preload="auto"></audio>
+    let shuffledQuestions = [];
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let timerId = null;
+    let timeLeft = 20;
 
-  <script src="script.js"></script>
+    const themeSelect = document.getElementById('theme-select');
+    const startBtn = document.getElementById('start-btn');
+    const menu = document.getElementById('menu');
+    const quizContainer = document.getElementById('quiz-container');
+    const questionDisplay = document.getElementById('question');
+    const answersContainer = document.getElementById('answers');
+    const nextBtn = document.getElementById('next-btn');
+    const timerDisplay = document.getElementById('timer');
+    const themeDisplay = document.getElementById('theme');
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function startQuiz() {
+      const selectedTheme = themeSelect.value;
+      if (!selectedTheme) {
+        alert("Veuillez choisir une thématique avant de commencer.");
+        return;
+      }
+      score = 0;
+      currentQuestionIndex = 0;
+
+      if (selectedTheme === 'aleatoire') {
+        shuffledQuestions = questions.slice();
+      } else {
+        shuffledQuestions = questions.filter(q => q.theme === selectedTheme);
+      }
+      shuffle(shuffledQuestions);
+
+      menu.classList.add('hidden');
+      quizContainer.classList.remove('hidden');
+      themeDisplay.textContent = `Thématique : ${selectedTheme === 'aleatoire' ? '🎲 Aléatoire' : selectedTheme}`;
+      showQuestion();
+    }
+
+    function startTimer() {
+      timeLeft = 20;
+      timerDisplay.textContent = `⏳ Temps restant : ${timeLeft}s`;
+      timerId = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = `⏳ Temps restant : ${timeLeft}s`;
+        if (timeLeft <= 0) {
+          clearInterval(timerId);
+          disableAnswers();
+          showCorrectAnswer();
+          nextBtn.classList.remove('hidden');
+        }
+      }, 1000);
+    }
+
+    function showQuestion() {
+      resetState();
+      startTimer();
+
+      const currentQuestion = shuffledQuestions[currentQuestionIndex];
+      questionDisplay.textContent = currentQuestion.question;
+
+      currentQuestion.choices.forEach(choice => {
+        const button = document.createElement('button');
+        button.textContent = choice;
+        button.addEventListener('click', selectAnswer);
+        answersContainer.appendChild(button);
+      });
+
+      nextBtn.classList.add('hidden');
+    }
+
+    function resetState() {
+      clearInterval(timerId);
+      timerDisplay.textContent = "";
+      nextBtn.classList.add('hidden');
+      while (answersContainer.firstChild) {
+        answersContainer.removeChild(answersContainer.firstChild);
+      }
+    }
+
+    function selectAnswer(e) {
+      clearInterval(timerId);
+      const selectedBtn = e.target;
+      const answer = selectedBtn.textContent;
+      const correctAnswer = shuffledQuestions[currentQuestionIndex].answer;
+
+      disableAnswers();
+
+      if (answer === correctAnswer) {
+        selectedBtn.classList.add('correct');
+        score++;
+      } else {
+        selectedBtn.classList.add('incorrect');
+        Array.from(answersContainer.children).forEach(button => {
+          if (button.textContent === correctAnswer) {
+            button.classList.add('correct');
+          }
+        });
+      }
+      nextBtn.classList.remove('hidden');
+    }
+
+    function disableAnswers() {
+      Array.from(answersContainer.children).forEach(button => {
+        button.disabled = true;
+      });
+    }
+
+    function showCorrectAnswer() {
+      const correctAnswer = shuffledQuestions[currentQuestionIndex].answer;
+      Array.from(answersContainer.children).forEach(button => {
+        if (button.textContent === correctAnswer) {
+          button.classList.add('correct');
+        } else {
+          button.disabled = true;
+        }
+      });
+    }
+
+    function nextQuestion() {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < shuffledQuestions.length) {
+        showQuestion();
+      } else {
+        endQuiz();
+      }
+    }
+
+    function endQuiz() {
+      resetState();
+      timerDisplay.textContent = "";
+      questionDisplay.textContent = `Quiz terminé ! Votre score : ${score} / ${shuffledQuestions.length}.`;
+      answersContainer.innerHTML = "";
+
+      const ratio = score / shuffledQuestions.length;
+      let message;
+      if (ratio === 1) message = "🎉 Parfait !";
+      else if (ratio >= 0.8) message = "👍 Très bien joué !";
+      else if (ratio >= 0.5) message = "😊 Pas mal, continue !";
+      else message = "💪 Encore un effort !";
+
+      const scoreMsg = document.createElement('p');
+      scoreMsg.id = 'score-message';
+      scoreMsg.textContent = message;
+      answersContainer.appendChild(scoreMsg);
+
+      const citation = document.createElement('p');
+      citation.id = 'citation';
+      citation.textContent = '“La Terre ne nous appartient pas, nous l’empruntons à nos enfants.” – Proverbe amérindien';
+      answersContainer.appendChild(citation);
+
+      const backBtn = document.createElement('button');
+      backBtn.id = 'back-btn';
+      backBtn.textContent = 'Retour au menu';
+      backBtn.addEventListener('click', () => {
+        quizContainer.classList.add('hidden');
+        menu.classList.remove('hidden');
+        themeSelect.value = "";
+      });
+      answersContainer.appendChild(backBtn);
+    }
+
+    startBtn.addEventListener('click', startQuiz);
+    nextBtn.addEventListener('click', nextQuestion);
+  </script>
 </body>
 </html>
