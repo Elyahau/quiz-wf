@@ -1,58 +1,182 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Quiz Écologie</title>
   <style>
     body {
-      font-family: sans-serif;
-      background: #f0f4f8;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #a3d9b1;
       margin: 0;
       padding: 0;
       text-align: center;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
+
     .container {
-      max-width: 600px;
-      margin: auto;
+      background: rgba(12, 60, 35, 0.85);
       padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 0 15px #2ed573;
+      width: 100%;
+      max-width: 650px;
+      backdrop-filter: blur(8px);
+      border: 2px solid #2ed573;
     }
+
     h1 {
-      color: #2b6cb0;
-    }
-    select, button {
-      font-size: 1rem;
-      padding: 0.5rem;
-      margin-top: 1rem;
-    }
-    .hidden {
-      display: none;
-    }
-    .question {
-      font-size: 1.2rem;
+      position: relative;
+      color: #7bed9f;
+      animation: glitch 2s infinite;
+      font-weight: 700;
+      font-size: 2.5rem;
       margin-bottom: 1rem;
     }
-    .answers button {
-      display: block;
-      width: 100%;
-      margin: 0.3rem 0;
-      padding: 0.5rem;
+
+    select, button {
+      font-size: 1.1rem;
+      padding: 0.7rem 1.2rem;
+      margin-top: 1.5rem;
+      border-radius: 12px;
       border: none;
-      border-radius: 5px;
+      outline: none;
       cursor: pointer;
-      background: #e2e8f0;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      box-shadow: 0 0 8px #23d997;
+      background: #064635;
+      color: #a3d9b1;
     }
+
+    select:hover, button:hover:not(:disabled) {
+      background: #23d997;
+      color: #003d00;
+      box-shadow: 0 0 12px #23d997, 0 0 20px #1aff73;
+      animation: glow 1.5s infinite alternate;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+      animation: none;
+    }
+
+    .question {
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      text-shadow: 0 0 6px #23d997aa;
+    }
+
+    .answers button {
+      background: #0b3d1d;
+      color: #a3d9b1;
+      margin: 0.4rem 0;
+      padding-left: 1rem;
+      text-align: left;
+      box-shadow: inset 0 0 10px #21bf73;
+      border-radius: 10px;
+      transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+    }
+
     .answers button.correct {
-      background: #38a169;
-      color: white;
+      background: #39ff14;
+      color: #003300;
+      font-weight: 700;
+      box-shadow: 0 0 20px #39ff14;
+      text-shadow: 0 0 6px #003300;
     }
+
     .answers button.incorrect {
-      background: #e53e3e;
-      color: white;
+      background: #ff2e2e;
+      color: #330000;
+      font-weight: 700;
+      box-shadow: 0 0 20px #ff2e2e;
+      text-shadow: 0 0 6px #330000;
     }
+
     #timer {
-      margin: 1rem 0;
-      font-weight: bold;
-      color: #2d3748;
+      font-weight: 700;
+      font-size: 1.2rem;
+      margin: 1.2rem 0;
+      color: #23d997;
+      text-shadow: 0 0 6px #23d997cc;
+      animation: glow 2s infinite alternate;
+    }
+
+    #theme {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      color: #7bed9f;
+      text-shadow: 0 0 8px #23d997;
+    }
+
+    #timer-bar {
+      width: 100%;
+      height: 8px;
+      background: #064635;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    #timer-progress {
+      height: 100%;
+      width: 100%;
+      background: #23d997;
+      border-radius: 6px;
+      transition: width 1s linear;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Animations */
+
+    @keyframes glow {
+      0%, 100% {
+        box-shadow: 0 0 5px #23d997;
+      }
+      50% {
+        box-shadow: 0 0 20px #1aff73;
+      }
+    }
+
+    @keyframes glitch {
+      0% {
+        clip: rect(0, 900px, 0, 0);
+        transform: translate(0);
+      }
+      10% {
+        clip: rect(0, 900px, 50px, 0);
+        transform: translate(-2px, -2px);
+      }
+      20% {
+        clip: rect(10px, 900px, 40px, 0);
+        transform: translate(2px, 2px);
+      }
+      30% {
+        clip: rect(20px, 900px, 30px, 0);
+        transform: translate(-2px, 2px);
+      }
+      40% {
+        clip: rect(30px, 900px, 20px, 0);
+        transform: translate(2px, -2px);
+      }
+      50% {
+        clip: rect(40px, 900px, 10px, 0);
+        transform: translate(0);
+      }
+      100% {
+        clip: rect(0, 900px, 0, 0);
+        transform: translate(0);
+      }
     }
   </style>
 </head>
@@ -60,7 +184,7 @@
   <div class="container">
     <div id="menu">
       <h1>🌍 Quiz Environnement</h1>
-      <label for="theme-select">Choisis une thématique :</label><br>
+      <label for="theme-select">Choisis une thématique :</label><br />
       <select id="theme-select">
         <option value="">-- Choisir --</option>
         <option value="💧 Eau">💧 Eau</option>
@@ -70,23 +194,31 @@
         <option value="⚡ Énergie">⚡ Énergie</option>
         <option value="🗑️ Déchets">🗑️ Déchets</option>
         <option value="aleatoire">🎲 Aléatoire</option>
-      </select><br>
-     <button id="start-btn" class="btn">Commencer le quiz</button>
+      </select><br />
+      <button id="start-btn" class="btn">Commencer le quiz</button>
+    </div>
 
-  <div id="quiz-container" class="hidden">
-  <div id="theme"></div> <!-- ← ajouté -->
-  <div id="question"></div>
-  <div id="answers" class="answers"></div>
-  <div id="timer"></div>
-  <button id="next-btn" class="btn hidden">Suivant</button>
+    <div id="quiz-container" class="hidden">
+      <div id="theme"></div>
+      <div id="question" class="question"></div>
+      
+      <div id="timer-bar">
+        <div id="timer-progress"></div>
+      </div>
+      <div id="timer"></div>
+      
+      <div id="answers" class="answers"></div>
+      <button id="next-btn" class="btn hidden">Suivant</button>
+    </div>
+
+    <div id="result-container" class="hidden">
+      <p id="result-text"></p>
+      <button id="back-to-menu-btn" class="btn">Retour au menu</button>
+    </div>
+
+    <button id="back-to-menu-during-quiz-btn" class="btn hidden">Retour au menu</button>
+
   </div>
-
-  <div id="result-container" class="hidden">
-    <p id="result-text"></p>
-    <button id="back-to-menu-btn" class="btn">Retour au menu</button>
-  </div>
-
-  <button id="back-to-menu-during-quiz-btn" class="btn hidden">Retour au menu</button>
 
   <script>
     const questions = [
@@ -124,80 +256,75 @@
         choices: [
           "Le réchauffement causé par les gaz à effet de serre",
           "La réduction de la couche d'ozone",
-          "Le refroidissement de l'atmosphère",
-          "Une tempête tropicale"
+          "La fonte des glaciers",
+          "Une tempête violente"
         ],
         answer: "Le réchauffement causé par les gaz à effet de serre"
       },
       {
         theme: "🌤️ Climat",
-        question: "🌤️ Climat — Question 2 : Quel est le principal gaz à effet de serre produit par l'activité humaine ?",
-        choices: [
-          "Oxygène",
-          "Dioxyde de carbone (CO2)",
-          "Azote",
-          "Méthane"
-        ],
-        answer: "Dioxyde de carbone (CO2)"
+        question: "🌤️ Climat — Question 2 : Quel gaz est le principal responsable du changement climatique ?",
+        choices: ["Oxygène", "Dioxyde de carbone", "Azote", "Hélium"],
+        answer: "Dioxyde de carbone"
       },
       {
         theme: "🌤️ Climat",
-        question: "🌤️ Climat — Question 3 : Quelle conséquence du réchauffement climatique menace les zones côtières ?",
+        question: "🌤️ Climat — Question 3 : Que peut-on faire pour réduire notre empreinte carbone ?",
         choices: [
-          "Augmentation des inondations",
-          "Augmentation de la biodiversité",
-          "Refroidissement des océans",
-          "Stabilisation du climat"
+          "Utiliser plus de plastique",
+          "Réduire la consommation d'énergie",
+          "Augmenter les déplacements en voiture",
+          "Manger plus de viande"
         ],
-        answer: "Augmentation des inondations"
-      },
-      {
-        theme: "🌤️ Climat",
-        question: "🌤️ Climat — Question 4 : Quelle énergie est renouvelable et ne produit pas de CO2 ?",
-        choices: [
-          "Charbon",
-          "Pétrole",
-          "Solaire",
-          "Gaz naturel"
-        ],
-        answer: "Solaire"
-      },
-      {
-        theme: "🌤️ Climat",
-        question: "🌤️ Climat — Question 5 : Quelle mesure aide à réduire les émissions de gaz à effet de serre ?",
-        choices: [
-          "Augmenter la consommation d'énergie",
-          "Planter des arbres",
-          "Augmenter l'utilisation des voitures",
-          "Déforester"
-        ],
-        answer: "Planter des arbres"
+        answer: "Réduire la consommation d'énergie"
       },
       {
         theme: "🌱 Biodiversité",
-        question: "🌱 Biodiversité — Question 1 : Qu'est-ce que la biodiversité ?",
+        question: "🌱 Biodiversité — Question 1 : Qu’est-ce que la biodiversité ?",
         choices: [
-          "La diversité des espèces vivantes",
-          "Le climat",
-          "La pollution",
-          "Les énergies renouvelables"
+          "La variété des espèces vivantes",
+          "Le nombre d’arbres dans une forêt",
+          "La qualité de l’air",
+          "La quantité d’eau dans une région"
         ],
-        answer: "La diversité des espèces vivantes"
+        answer: "La variété des espèces vivantes"
       },
       {
         theme: "🌱 Biodiversité",
-        question: "🌱 Biodiversité — Question 2 : Quelle est une cause majeure de la perte de biodiversité ?",
+        question: "🌱 Biodiversité — Question 2 : Pourquoi la biodiversité est-elle importante ?",
         choices: [
-          "La pollution de l’air",
+          "Pour la beauté des paysages",
+          "Pour l’équilibre des écosystèmes",
+          "Pour les loisirs",
+          "Pour la construction"
+        ],
+        answer: "Pour l’équilibre des écosystèmes"
+      },
+      {
+        theme: "🌱 Biodiversité",
+        question: "🌱 Biodiversité — Question 3 : Quelle activité menace la biodiversité ?",
+        choices: [
+          "La reforestation",
           "La déforestation",
           "Le recyclage",
-          "La conservation"
+          "La protection des animaux"
         ],
         answer: "La déforestation"
       },
       {
         theme: "♻️ Impacts sur Wallis et Futuna",
-        question: "♻️ Wallis et Futuna — Question 1 : Quelle ressource naturelle est la plus menacée à Wallis et Futuna ?",
+        question: "♻️ Impacts sur Wallis et Futuna — Question 1 : Quel est un impact majeur du changement climatique à Wallis et Futuna ?",
+        choices: [
+          "Augmentation du tourisme",
+          "Élévation du niveau de la mer",
+          "Réduction des déchets",
+          "Amélioration des infrastructures"
+        ],
+        answer: "Élévation du niveau de la mer"
+      },
+      {
+        theme: "♻️ Impacts sur Wallis et Futuna",
+        question: "♻️ Impacts sur Wallis et Futuna — Question 2 : Quelle ressource naturelle est particulièrement menacée ?",
         choices: [
           "Le corail",
           "Le pétrole",
@@ -207,199 +334,288 @@
         answer: "Le corail"
       },
       {
-        theme: "⚡ Énergie",
-        question: "⚡ Énergie — Question 1 : Quelle source d'énergie est renouvelable ?",
+        theme: "♻️ Impacts sur Wallis et Futuna",
+        question: "♻️ Impacts sur Wallis et Futuna — Question 3 : Quelle solution locale aide à préserver l’environnement ?",
         choices: [
-          "Charbon",
-          "Solaire",
-          "Pétrole",
-          "Gaz naturel"
+          "La pêche excessive",
+          "La replantation de mangroves",
+          "La déforestation",
+          "L’urbanisation"
         ],
+        answer: "La replantation de mangroves"
+      },
+      {
+        theme: "⚡ Énergie",
+        question: "⚡ Énergie — Question 1 : Quelle est une source d’énergie renouvelable ?",
+        choices: ["Charbon", "Pétrole", "Solaire", "Gaz naturel"],
         answer: "Solaire"
       },
       {
+        theme: "⚡ Énergie",
+        question: "⚡ Énergie — Question 2 : Pourquoi utiliser l’énergie renouvelable ?",
+        choices: [
+          "Elle est infinie et propre",
+          "Elle coûte plus cher",
+          "Elle produit plus de CO2",
+          "Elle est rare"
+        ],
+        answer: "Elle est infinie et propre"
+      },
+      {
+        theme: "⚡ Énergie",
+        question: "⚡ Énergie — Question 3 : Quelle énergie est la plus polluante ?",
+        choices: [
+          "Nucléaire",
+          "Charbon",
+          "Éolienne",
+          "Hydraulique"
+        ],
+        answer: "Charbon"
+      },
+      {
         theme: "🗑️ Déchets",
-        question: "🗑️ Déchets — Question 1 : Quel déchet peut être recyclé ?",
+        question: "🗑️ Déchets — Question 1 : Que signifie le tri des déchets ?",
+        choices: [
+          "Jeter tout ensemble",
+          "Séparer les déchets selon leur nature",
+          "Brûler les déchets",
+          "Enterrer les déchets"
+        ],
+        answer: "Séparer les déchets selon leur nature"
+      },
+      {
+        theme: "🗑️ Déchets",
+        question: "🗑️ Déchets — Question 2 : Quel déchet est recyclable ?",
         choices: [
           "Verre",
-          "Déchets organiques",
-          "Déchets non recyclables",
-          "Déchets électroniques"
+          "Styromousse",
+          "Déchets alimentaires",
+          "Déchets dangereux"
         ],
         answer: "Verre"
+      },
+      {
+        theme: "🗑️ Déchets",
+        question: "🗑️ Déchets — Question 3 : Quelle action réduit la production de déchets ?",
+        choices: [
+          "Utiliser des emballages plastiques",
+          "Acheter en vrac",
+          "Jeter tout à la poubelle",
+          "Utiliser des produits jetables"
+        ],
+        answer: "Acheter en vrac"
       }
     ];
 
-    let shuffledQuestions = [];
+    const themeSelect = document.getElementById("theme-select");
+    const startBtn = document.getElementById("start-btn");
+    const menu = document.getElementById("menu");
+    const quizContainer = document.getElementById("quiz-container");
+    const themeDisplay = document.getElementById("theme");
+    const questionDisplay = document.getElementById("question");
+    const answersContainer = document.getElementById("answers");
+    const nextBtn = document.getElementById("next-btn");
+    const timerDisplay = document.getElementById("timer");
+    const timerProgress = document.getElementById("timer-progress");
+    const timerBar = document.getElementById("timer-bar");
+    const resultContainer = document.getElementById("result-container");
+    const resultText = document.getElementById("result-text");
+    const backToMenuBtn = document.getElementById("back-to-menu-btn");
+    const backToMenuDuringQuizBtn = document.getElementById("back-to-menu-during-quiz-btn");
+
+    let filteredQuestions = [];
     let currentQuestionIndex = 0;
     let score = 0;
-    let timerId = null;
+    let timerId;
     let timeLeft = 20;
+    const MAX_TIME = 20;
 
-    const themeSelect = document.getElementById('theme-select');
-    const startBtn = document.getElementById('start-btn');
-    const menu = document.getElementById('menu');
-    const quizContainer = document.getElementById('quiz-container');
-    const questionDisplay = document.getElementById('question');
-    const answersContainer = document.getElementById('answers');
-    const nextBtn = document.getElementById('next-btn');
-    const timerDisplay = document.getElementById('timer');
-    const themeDisplay = document.getElementById('theme');
+    startBtn.addEventListener("click", () => {
+      const selectedTheme = themeSelect.value;
+      if (!selectedTheme) {
+        alert("Veuillez choisir une thématique !");
+        return;
+      }
 
-    function shuffle(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+      score = 0;
+      currentQuestionIndex = 0;
+      if (selectedTheme === "aleatoire") {
+        filteredQuestions = [...questions];
+      } else {
+        filteredQuestions = questions.filter(q => q.theme === selectedTheme);
+      }
+
+      menu.classList.add("hidden");
+      quizContainer.classList.remove("hidden");
+      backToMenuDuringQuizBtn.classList.remove("hidden");
+      showQuestion();
+      startTimer();
+      updateThemeDisplay(selectedTheme);
+    });
+
+    function updateThemeDisplay(theme) {
+      if (theme === "aleatoire") {
+        themeDisplay.textContent = "🎲 Thématique : Aléatoire";
+      } else {
+        themeDisplay.textContent = `Thématique : ${theme}`;
       }
     }
 
-    function startQuiz() {
-      const selectedTheme = themeSelect.value;
-      if (!selectedTheme) {
-        alert("Veuillez choisir une thématique avant de commencer.");
+    function showQuestion() {
+      clearTimer();
+
+      if (currentQuestionIndex >= filteredQuestions.length) {
+        showResult();
         return;
       }
+
+      const currentQuestion = filteredQuestions[currentQuestionIndex];
+      questionDisplay.textContent = currentQuestion.question;
+      answersContainer.innerHTML = "";
+
+      currentQuestion.choices.forEach(choice => {
+        const btn = document.createElement("button");
+        btn.textContent = choice;
+        btn.addEventListener("click", () => selectAnswer(choice));
+        answersContainer.appendChild(btn);
+      });
+
+      nextBtn.classList.add("hidden");
+      startTimer();
+    }
+
+    function selectAnswer(selected) {
+      clearTimer();
+
+      const currentQuestion = filteredQuestions[currentQuestionIndex];
+      const correct = currentQuestion.answer;
+
+      const buttons = answersContainer.querySelectorAll("button");
+      buttons.forEach(button => {
+        button.disabled = true;
+        if (button.textContent === correct) {
+          button.classList.add("correct");
+        }
+        if (button.textContent === selected && selected !== correct) {
+          button.classList.add("incorrect");
+        }
+      });
+
+      if (selected === correct) {
+        score++;
+        playSound("correct");
+      } else {
+        playSound("incorrect");
+      }
+
+      nextBtn.classList.remove("hidden");
+    }
+
+    nextBtn.addEventListener("click", () => {
+      currentQuestionIndex++;
+      showQuestion();
+    });
+
+    backToMenuBtn.addEventListener("click", () => {
+      resetQuiz();
+    });
+
+    backToMenuDuringQuizBtn.addEventListener("click", () => {
+      if (confirm("Voulez-vous vraiment quitter le quiz ? Votre progression sera perdue.")) {
+        resetQuiz();
+      }
+    });
+
+    function showResult() {
+      quizContainer.classList.add("hidden");
+      backToMenuDuringQuizBtn.classList.add("hidden");
+      resultContainer.classList.remove("hidden");
+      resultText.textContent = `Quiz terminé ! Votre score : ${score} / ${filteredQuestions.length}`;
+    }
+
+    function resetQuiz() {
+      clearTimer();
       score = 0;
       currentQuestionIndex = 0;
-
-      if (selectedTheme === 'aleatoire') {
-        shuffledQuestions = questions.slice();
-      } else {
-        shuffledQuestions = questions.filter(q => q.theme === selectedTheme);
-      }
-      shuffle(shuffledQuestions);
-
-      menu.classList.add('hidden');
-      quizContainer.classList.remove('hidden');
-      themeDisplay.textContent = `Thématique : ${selectedTheme === 'aleatoire' ? '🎲 Aléatoire' : selectedTheme}`;
-      showQuestion();
+      filteredQuestions = [];
+      menu.classList.remove("hidden");
+      quizContainer.classList.add("hidden");
+      resultContainer.classList.add("hidden");
+      backToMenuDuringQuizBtn.classList.add("hidden");
+      themeSelect.value = "";
+      timerDisplay.textContent = "";
+      timerProgress.style.width = "100%";
     }
 
     function startTimer() {
-      timeLeft = 20;
+      timeLeft = MAX_TIME;
       timerDisplay.textContent = `⏳ Temps restant : ${timeLeft}s`;
+      timerProgress.style.width = "100%";
+
       timerId = setInterval(() => {
         timeLeft--;
         timerDisplay.textContent = `⏳ Temps restant : ${timeLeft}s`;
+        timerProgress.style.width = (timeLeft / MAX_TIME) * 100 + "%";
+
         if (timeLeft <= 0) {
           clearInterval(timerId);
           disableAnswers();
           showCorrectAnswer();
-          nextBtn.classList.remove('hidden');
+          nextBtn.classList.remove("hidden");
+          playSound("incorrect");
         }
       }, 1000);
     }
 
-    function showQuestion() {
-      resetState();
-      startTimer();
-
-      const currentQuestion = shuffledQuestions[currentQuestionIndex];
-      questionDisplay.textContent = currentQuestion.question;
-
-      currentQuestion.choices.forEach(choice => {
-        const button = document.createElement('button');
-        button.textContent = choice;
-        button.addEventListener('click', selectAnswer);
-        answersContainer.appendChild(button);
-      });
-
-      nextBtn.classList.add('hidden');
-    }
-
-    function resetState() {
+    function clearTimer() {
       clearInterval(timerId);
-      timerDisplay.textContent = "";
-      nextBtn.classList.add('hidden');
-      while (answersContainer.firstChild) {
-        answersContainer.removeChild(answersContainer.firstChild);
-      }
-    }
-
-    function selectAnswer(e) {
-      clearInterval(timerId);
-      const selectedBtn = e.target;
-      const answer = selectedBtn.textContent;
-      const correctAnswer = shuffledQuestions[currentQuestionIndex].answer;
-
-      disableAnswers();
-
-      if (answer === correctAnswer) {
-        selectedBtn.classList.add('correct');
-        score++;
-      } else {
-        selectedBtn.classList.add('incorrect');
-        Array.from(answersContainer.children).forEach(button => {
-          if (button.textContent === correctAnswer) {
-            button.classList.add('correct');
-          }
-        });
-      }
-      nextBtn.classList.remove('hidden');
     }
 
     function disableAnswers() {
-      Array.from(answersContainer.children).forEach(button => {
-        button.disabled = true;
-      });
+      const buttons = answersContainer.querySelectorAll("button");
+      buttons.forEach(button => (button.disabled = true));
     }
 
     function showCorrectAnswer() {
-      const correctAnswer = shuffledQuestions[currentQuestionIndex].answer;
-      Array.from(answersContainer.children).forEach(button => {
-        if (button.textContent === correctAnswer) {
-          button.classList.add('correct');
-        } else {
-          button.disabled = true;
+      const currentQuestion = filteredQuestions[currentQuestionIndex];
+      const correct = currentQuestion.answer;
+
+      const buttons = answersContainer.querySelectorAll("button");
+      buttons.forEach(button => {
+        if (button.textContent === correct) {
+          button.classList.add("correct");
         }
       });
     }
 
-    function nextQuestion() {
-      currentQuestionIndex++;
-      if (currentQuestionIndex < shuffledQuestions.length) {
-        showQuestion();
-      } else {
-        endQuiz();
+    function playSound(type) {
+      try {
+        const ctx = new AudioContext();
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(ctx.destination);
+
+        if(type === 'correct') {
+          oscillator.frequency.value = 600; // Hz
+          gainNode.gain.value = 0.1;
+        } else {
+          oscillator.frequency.value = 200;
+          gainNode.gain.value = 0.15;
+        }
+
+        oscillator.type = 'square';
+        oscillator.start();
+
+        setTimeout(() => {
+          oscillator.stop();
+          ctx.close();
+        }, 150);
+      } catch (e) {
+        // AudioContext peut être bloqué par certains navigateurs sans interaction utilisateur
       }
     }
-
-    function endQuiz() {
-      resetState();
-      timerDisplay.textContent = "";
-      questionDisplay.textContent = `Quiz terminé ! Votre score : ${score} / ${shuffledQuestions.length}.`;
-      answersContainer.innerHTML = "";
-
-      const ratio = score / shuffledQuestions.length;
-      let message;
-      if (ratio === 1) message = "🎉 Parfait !";
-      else if (ratio >= 0.8) message = "👍 Très bien joué !";
-      else if (ratio >= 0.5) message = "😊 Pas mal, continue !";
-      else message = "💪 Encore un effort !";
-
-      const scoreMsg = document.createElement('p');
-      scoreMsg.id = 'score-message';
-      scoreMsg.textContent = message;
-      answersContainer.appendChild(scoreMsg);
-
-      const citation = document.createElement('p');
-      citation.id = 'citation';
-      citation.textContent = '“La Terre ne nous appartient pas, nous l’empruntons à nos enfants.” – Proverbe amérindien';
-      answersContainer.appendChild(citation);
-
-      const backBtn = document.createElement('button');
-      backBtn.id = 'back-btn';
-      backBtn.textContent = 'Retour au menu';
-      backBtn.addEventListener('click', () => {
-        quizContainer.classList.add('hidden');
-        menu.classList.remove('hidden');
-        themeSelect.value = "";
-      });
-      answersContainer.appendChild(backBtn);
-    }
-
-    startBtn.addEventListener('click', startQuiz);
-    nextBtn.addEventListener('click', nextQuestion);
   </script>
 </body>
 </html>
