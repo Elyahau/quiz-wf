@@ -268,144 +268,132 @@ const citations = [
   "“Le meilleur moment pour planter un arbre était il y a 20 ans. Le deuxième meilleur moment est maintenant.” – Proverbe chinois",
   "“Sauver notre planète, c’est sauver notre maison.” – Leonardo DiCaprio",
   "“Nous n'héritons pas de la Terre de nos ancêtres, nous l'empruntons à nos enfants.” – Antoine de Saint-Exupéry",
-  "“Chaque geste compte, aussi petit soit-il.” – Anonyme"
+  "“Chaque geste compte, aussi petit soit-il.” – Anonyme",
+  "“Tou haofaki te kahau o te tou'u fanau.” – Proverbe wallisien"
 ];
+const startBtn = document.getElementById("start-btn");
+const nextBtn = document.getElementById("next-btn");
+const questionContainer = document.getElementById("question-container");
+const questionElement = document.getElementById("question");
+const answerButtons = document.getElementById("answer-buttons");
+const resultContainer = document.getElementById("result-container");
+const resultText = document.getElementById("result-text");
+const backToMenuBtn = document.getElementById("back-to-menu-btn");
+const timerElement = document.getElementById("timer");
+const themeSelector = document.getElementById("theme-selector");
 
-const themeSelect = document.getElementById('theme-select');
-const startBtn = document.getElementById('start-btn');
-const menu = document.getElementById('menu');
-const quizContainer = document.getElementById('quiz-container');
-const themeDisplay = document.getElementById('theme');
-const questionDisplay = document.getElementById('question');
-const answersContainer = document.getElementById('answers');
-const timerDisplay = document.getElementById('timer');
-const nextBtn = document.getElementById('next-btn');
-
-let shuffledQuestions = [];
-let currentIndex = 0;
+let currentQuestions = [];
+let currentQuestionIndex = 0;
 let score = 0;
 let timer;
 let timeLeft = 15;
 
-function startQuiz() {
-  const selectedTheme = themeSelect.value;
-  if (!selectedTheme) {
-    alert("Merci de choisir une thématique !");
-    return;
-  }
-  if (selectedTheme === 'aleatoire') {
-    shuffledQuestions = questions.slice();
+startBtn.addEventListener("click", startQuiz);
+nextBtn.addEventListener("click", () => {
+  currentQuestionIndex++;
+  if (currentQuestionIndex < currentQuestions.length) {
+    showQuestion();
   } else {
-    shuffledQuestions = questions.filter(q => q.theme === selectedTheme);
+    endQuiz();
   }
-  if (shuffledQuestions.length === 0) {
-    alert("Aucune question disponible pour cette thématique.");
-    return;
-  }
-  shuffledQuestions.sort(() => Math.random() - 0.5);
-  currentIndex = 0;
+});
+
+function startQuiz() {
+  const selectedTheme = themeSelector.value;
+  currentQuestions = questions.filter(q => q.theme === selectedTheme);
+  shuffleArray(currentQuestions);
+  currentQuestionIndex = 0;
   score = 0;
-  menu.classList.add('hidden');
-  quizContainer.classList.remove('hidden');
-  nextBtn.classList.add('hidden');
+  questionContainer.classList.remove("hidden");
+  startBtn.classList.add("hidden");
+  themeSelector.classList.add("hidden");
+  resultContainer.classList.add("hidden");
   showQuestion();
-  startTimer();
-  themeDisplay.textContent = `Thématique : ${selectedTheme}`;
 }
 
 function showQuestion() {
   resetState();
-  let currentQuestion = shuffledQuestions[currentIndex];
-  questionDisplay.textContent = currentQuestion.question;
+  const currentQuestion = currentQuestions[currentQuestionIndex];
+  questionElement.innerText = currentQuestion.question;
   currentQuestion.choices.forEach(choice => {
-    const button = document.createElement('button');
-    button.textContent = choice;
-    button.addEventListener('click', () => selectAnswer(choice));
-    answersContainer.appendChild(button);
+    const button = document.createElement("button");
+    button.innerText = choice;
+    button.classList.add("btn");
+    button.addEventListener("click", () => selectAnswer(choice));
+    answerButtons.appendChild(button);
   });
+  startTimer();
 }
 
 function resetState() {
   clearInterval(timer);
-  timeLeft = 15;
-  timerDisplay.textContent = `Temps restant : ${timeLeft}s`;
-  nextBtn.classList.add('hidden');
-  while (answersContainer.firstChild) {
-    answersContainer.removeChild(answersContainer.firstChild);
+  timerElement.innerText = "";
+  while (answerButtons.firstChild) {
+    answerButtons.removeChild(answerButtons.firstChild);
   }
+  nextBtn.classList.add("hidden");
 }
 
 function startTimer() {
+  timeLeft = 15;
+  timerElement.innerText = `Temps restant : ${timeLeft}s`;
   timer = setInterval(() => {
     timeLeft--;
-    timerDisplay.textContent = `Temps restant : ${timeLeft}s`;
+    timerElement.innerText = `Temps restant : ${timeLeft}s`;
     if (timeLeft <= 0) {
       clearInterval(timer);
       showCorrectAnswer();
-      nextBtn.classList.remove('hidden');
     }
   }, 1000);
 }
 
 function selectAnswer(selectedChoice) {
   clearInterval(timer);
-  const currentQuestion = shuffledQuestions[currentIndex];
-  const buttons = answersContainer.querySelectorAll('button');
+  const currentQuestion = currentQuestions[currentQuestionIndex];
+  const buttons = answerButtons.querySelectorAll("button");
   buttons.forEach(button => {
     button.disabled = true;
-    if (button.textContent === currentQuestion.answer) {
-      button.classList.add('correct');
-    }
-    if (button.textContent === selectedChoice && selectedChoice !== currentQuestion.answer) {
-      button.classList.add('incorrect');
+    if (button.innerText === currentQuestion.answer) {
+      button.classList.add("correct");
+    } else if (button.innerText === selectedChoice) {
+      button.classList.add("incorrect");
     }
   });
   if (selectedChoice === currentQuestion.answer) {
     score++;
   }
-  nextBtn.classList.remove('hidden');
+  nextBtn.classList.remove("hidden");
 }
 
 function showCorrectAnswer() {
-  const currentQuestion = shuffledQuestions[currentIndex];
-  const buttons = answersContainer.querySelectorAll('button');
+  const currentQuestion = currentQuestions[currentQuestionIndex];
+  const buttons = answerButtons.querySelectorAll("button");
   buttons.forEach(button => {
     button.disabled = true;
-    if (button.textContent === currentQuestion.answer) {
-      button.classList.add('correct');
+    if (button.innerText === currentQuestion.answer) {
+      button.classList.add("correct");
     }
   });
+  nextBtn.classList.remove("hidden");
 }
 
-nextBtn.addEventListener('click', () => {
-  currentIndex++;
-  if (currentIndex < shuffledQuestions.length) {
-    showQuestion();
-    startTimer();
-  } else {
-    endQuiz();
-  }
+function endQuiz() {
+  questionContainer.classList.add("hidden");
+  resultContainer.classList.remove("hidden");
+  const randomQuote = citations[Math.floor(Math.random() * citations.length)];
+  resultText.innerText = `Quiz terminé ! Ton score : ${score} / ${currentQuestions.length}\n\n${randomQuote}`;
+  backToMenuBtn.classList.remove("hidden");
+}
+
+backToMenuBtn.addEventListener("click", () => {
+  resultContainer.classList.add("hidden");
+  startBtn.classList.remove("hidden");
+  themeSelector.classList.remove("hidden");
 });
 
-startBtn.addEventListener('click', startQuiz);
-
-function endQuiz() {
-  resetState();
-  themeDisplay.textContent = "";
-  questionDisplay.textContent = `Quiz terminé ! Votre score : ${score} / ${shuffledQuestions.length}`;
-  answersContainer.innerHTML = "";
-  const citation = document.createElement('p');
-  citation.textContent = citations[Math.floor(Math.random() * citations.length)];
-  answersContainer.appendChild(citation);
-  nextBtn.classList.add('hidden');
-
-  const backToMenuBtn = document.createElement('button');
-  backToMenuBtn.textContent = "Retour au menu";
-  backToMenuBtn.addEventListener('click', () => {
-    quizContainer.classList.add('hidden');
-    menu.classList.remove('hidden');
-    themeSelect.value = "";
-    backToMenuBtn.remove();
-  });
-  answersContainer.appendChild(backToMenuBtn);
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
 }
