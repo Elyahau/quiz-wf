@@ -2,388 +2,189 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Quiz Écologie</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: #a3d9b1;
-      margin: 0;
-      padding: 0;
-      text-align: center;
+      background: #e0f7e9;
+      margin: 0; padding: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-start;
       min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      color: #2a3d2d;
     }
-
-    .container {
-      background: rgba(12, 60, 35, 0.85);
-      padding: 2rem;
-      border-radius: 20px;
-      box-shadow: 0 0 15px #2ed573;
-      width: 100%;
-      max-width: 650px;
-      backdrop-filter: blur(8px);
-      border: 2px solid #2ed573;
-    }
-
     h1 {
-      position: relative;
-      color: #7bed9f;
-      animation: glitch 2s infinite;
+      margin-top: 20px;
       font-weight: 700;
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
+      text-align: center;
+      color: #236f3e;
     }
-
-    select, button {
-      font-size: 1.1rem;
-      padding: 0.7rem 1.2rem;
-      margin-top: 1.5rem;
-      border-radius: 12px;
-      border: none;
-      outline: none;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-weight: 600;
-      box-shadow: 0 0 8px #23d997;
-      background: #064635;
-      color: #a3d9b1;
-    }
-
-    select:hover, button:hover:not(:disabled) {
-      background: #23d997;
-      color: #003d00;
-      box-shadow: 0 0 12px #23d997, 0 0 20px #1aff73;
-      animation: glow 1.5s infinite alternate;
-    }
-
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      box-shadow: none;
-      animation: none;
-    }
-
-    .question {
-      font-size: 1.3rem;
-      margin-bottom: 1.5rem;
-      font-weight: 600;
-      text-shadow: 0 0 6px #23d997aa;
-    }
-
-    .answers button {
-      background: #0b3d1d;
-      color: #a3d9b1;
-      margin: 0.4rem 0;
-      padding-left: 1rem;
-      text-align: left;
-      box-shadow: inset 0 0 10px #21bf73;
+    #menu, #quiz-container, #result-container {
+      max-width: 600px;
+      width: 90%;
+      background: #f5fff9;
       border-radius: 10px;
-      transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+      padding: 20px 25px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin: 20px auto;
     }
-
-    .answers button.correct {
-      background: #39ff14;
-      color: #003300;
-      font-weight: 700;
-      box-shadow: 0 0 20px #39ff14;
-      text-shadow: 0 0 6px #003300;
+    select, button {
+      padding: 10px 15px;
+      margin: 10px 5px 20px 0;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 2px solid #4caf50;
+      background: #c7f1d1;
+      color: #2a3d2d;
+      cursor: pointer;
+      transition: background 0.3s ease;
     }
-
-    .answers button.incorrect {
-      background: #ff2e2e;
-      color: #330000;
-      font-weight: 700;
-      box-shadow: 0 0 20px #ff2e2e;
-      text-shadow: 0 0 6px #330000;
+    button:hover:not(:disabled), select:hover {
+      background: #98d99f;
     }
-
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+    #answers button {
+      display: block;
+      width: 100%;
+      margin: 8px 0;
+      text-align: left;
+      font-weight: 600;
+    }
+    .correct {
+      background-color: #a1d99b !important;
+      border-color: #4caf50 !important;
+      color: #1b3816 !important;
+    }
+    .incorrect {
+      background-color: #f28b82 !important;
+      border-color: #d32f2f !important;
+      color: #5a1a1a !important;
+    }
     #timer {
       font-weight: 700;
-      font-size: 1.2rem;
-      margin: 1.2rem 0;
-      color: #23d997;
-      text-shadow: 0 0 6px #23d997cc;
-      animation: glow 2s infinite alternate;
+      margin-bottom: 15px;
+      color: #236f3e;
     }
-
-    #theme {
-      font-size: 1.4rem;
-      margin-bottom: 1rem;
-      color: #7bed9f;
-      text-shadow: 0 0 8px #23d997;
-    }
-
     #timer-bar {
       width: 100%;
-      height: 8px;
-      background: #064635;
+      height: 10px;
+      background: #a9d5a7;
       border-radius: 6px;
-      margin-bottom: 10px;
       overflow: hidden;
+      margin-bottom: 15px;
     }
-
     #timer-progress {
       height: 100%;
+      background: #4caf50;
       width: 100%;
-      background: #23d997;
-      border-radius: 6px;
       transition: width 1s linear;
     }
-
     .hidden {
-      display: none !important;
+      display: none;
     }
-
-    @keyframes glow {
-      0%, 100% { box-shadow: 0 0 5px #23d997; }
-      50% { box-shadow: 0 0 20px #1aff73; }
+    #theme {
+      font-weight: 700;
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+      color: #317a33;
     }
-
-    @keyframes glitch {
-      0% { clip: rect(0,900px,0,0); transform: translate(0); }
-      10% { clip: rect(0,900px,50px,0); transform: translate(-2px,-2px); }
-      20% { clip: rect(10px,900px,40px,0); transform: translate(2px,2px); }
-      30% { clip: rect(20px,900px,30px,0); transform: translate(-2px,2px); }
-      40% { clip: rect(30px,900px,20px,0); transform: translate(2px,-2px); }
-      50% { clip: rect(40px,900px,10px,0); transform: translate(0); }
-      100% { clip: rect(0,900px,0,0); transform: translate(0); }
+    #next-btn, #back-to-menu-btn, #back-to-menu-during-quiz-btn {
+      background: #4caf50;
+      border-color: #3e8e41;
+      color: #e9f9e9;
+      font-weight: 700;
+      margin-top: 15px;
+    }
+    #next-btn.hidden, #back-to-menu-during-quiz-btn.hidden {
+      display: none;
+    }
+    #result-text {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    #citation {
+      font-style: italic;
+      color: #3e8e41;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div id="menu">
-      <h1>🌍 Quiz Environnement</h1>
-      <label for="mode-select" style="color:#00ffea;font-family:'Orbitron',sans-serif;margin-top:15px;display:block;">Choisir le mode de jeu :</label>
-      <select id="mode-select" style="background:#001f25;color:#00ffea;border:1px solid #00ffea;border-radius:5px;padding:6px;">
-        <option value="normal">Mode Normal</option>
-        <option value="battle">Mode Battle</option>
-      </select>
-      <label for="theme-select" style="display:block;margin-top:15px;">Choisis une thématique :</label>
-      <select id="theme-select">
-        <option value="">-- Choisir --</option>
-        <option value="💧 Eau">💧 Eau</option>
-        <option value="🌤️ Climat">🌤️ Climat</option>
-        <option value="🌱 Biodiversité">🌱 Biodiversité</option>
-        <option value="♻️ Impacts sur Wallis et Futuna">♻️ Impacts sur Wallis et Futuna</option>
-        <option value="⚡ Énergie">⚡ Énergie</option>
-        <option value="🗑️ Déchets">🗑️ Déchets</option>
-        <option value="aleatoire">🎲 Aléatoire</option>
-      </select><br />
-      <button id="start-btn">Commencer le quiz</button>
-    </div>
+  <h1>Quiz Écologie</h1>
+  <div id="menu">
+    <label for="mode-select">Choisissez le mode :</label>
+    <select id="mode-select">
+      <option value="normal" selected>Normal</option>
+      <option value="battle">Battle</option>
+    </select>
+    <br />
+    <label for="theme-select">Choisissez la thématique :</label>
+    <select id="theme-select">
+      <option value="" selected disabled>-- Sélectionnez --</option>
+      <option value="aleatoire">Aléatoire</option>
+      <option value="🌊 Océan">🌊 Océan</option>
+      <option value="🌤️ Climat">🌤️ Climat</option>
+      <option value="🌱 Biodiversité">🌱 Biodiversité</option>
+      <option value="♻️ Impacts sur Wallis et Futuna">♻️ Impacts sur Wallis et Futuna</option>
+      <option value="⚡ Énergie">⚡ Énergie</option>
+      <option value="🗑️ Déchets">🗑️ Déchets</option>
+    </select>
+    <br />
+    <button id="start-btn">Démarrer le quiz</button>
+  </div>
 
-    <div id="quiz-container" class="hidden">
-      <div id="theme"></div>
-      <div id="question" class="question"></div>
-      <div id="timer-bar"><div id="timer-progress"></div></div>
-      <div id="timer"></div>
-      <div id="answers" class="answers"></div>
-      <button id="next-btn" class="hidden">Suivant</button>
-    </div>
+  <div id="quiz-container" class="hidden">
+    <div id="theme"></div>
+    <div id="question"></div>
+    <div id="answers"></div>
+    <div id="timer"></div>
+    <div id="timer-bar"><div id="timer-progress"></div></div>
+    <button id="next-btn" class="hidden">Suivant</button>
+    <button id="back-to-menu-during-quiz-btn">Retour au menu</button>
+  </div>
 
-    <div id="result-container" class="hidden">
-      <p id="result-text"></p>
-      <p id="citation" class="citation"></p>
-      <button id="back-to-menu-btn">Retour au menu</button>
-    </div>
-
-    <button id="back-to-menu-during-quiz-btn" class="hidden">Retour au menu</button>
+  <div id="result-container" class="hidden">
+    <div id="result-text"></div>
+    <div id="citation"></div>
+    <button id="back-to-menu-btn">Retour au menu</button>
   </div>
 
   <script>
     const questions = [
-      {
-        theme: "💧 Eau",
-        question: "💧 Eau — Question 13 : Qu’est-ce que le cycle de l’eau ?",
-        choices: [
-          "Le trajet de l’eau dans les tuyaux",
-          "La circulation de l’eau entre mer, atmosphère et terres",
-          "Le processus de traitement de l’eau potable",
-          "Le recyclage de l’eau usée"
-        ],
-        answer: "La circulation de l’eau entre mer, atmosphère et terres"
-      },
-      {
-        theme: "💧 Eau",
-        question: "💧 Eau — Question 14 : Quelle proportion de l’eau douce est accessible pour la consommation humaine ?",
-        choices: ["90%", "70%", "30%", "10%"],
-        answer: "10%"
-      },
-      {
-        theme: "💧 Eau",
-        question: "💧 Eau — Question 15 : Quel est l’effet d’une agriculture intensive sur l’eau ?",
-        choices: [
-          "Augmentation de la qualité",
-          "Pollution par pesticides et engrais",
-          "Diminution de la consommation",
-          "Amélioration de la biodiversité"
-        ],
-        answer: "Pollution par pesticides et engrais"
-      },
-      {
-        theme: "🌤️ Climat",
-        question: "🌤️ Climat — Question 1 : Qu’est-ce que le réchauffement climatique ?",
-        choices: [
-          "Une période de froid intense",
-          "L’augmentation moyenne des températures sur Terre",
-          "Une nouvelle ère glaciaire",
-          "Un phénomène naturel sans influence humaine"
-        ],
-        answer: "L’augmentation moyenne des températures sur Terre"
-      },
-      {
-        theme: "🌤️ Climat",
-        question: "🌤️ Climat — Question 2 : Quel gaz est principalement responsable de l’effet de serre ?",
-        choices: ["Oxygène", "Dioxyde de carbone", "Azote", "Hélium"],
-        answer: "Dioxyde de carbone"
-      },
-      {
-        theme: "🌤️ Climat",
-        question: "🌤️ Climat — Question 3 : Quel secteur est le plus gros émetteur de gaz à effet de serre ?",
-        choices: ["Transport", "Agriculture", "Industrie", "Énergie"],
-        answer: "Énergie"
-      },
-      {
-        theme: "🌱 Biodiversité",
-        question: "🌱 Biodiversité — Question 4 : Pourquoi la biodiversité est-elle importante ?",
-        choices: [
-          "Pour le plaisir visuel",
-          "Pour l’équilibre des écosystèmes",
-          "Parce que c’est obligatoire",
-          "Pour produire plus de déchets"
-        ],
-        answer: "Pour l’équilibre des écosystèmes"
-      },
-      {
-        theme: "🌱 Biodiversité",
-        question: "🌱 Biodiversité — Question 5 : Quelle est la principale cause de la perte de biodiversité ?",
-        choices: [
-          "Pollution",
-          "Changements climatiques",
-          "Destruction des habitats",
-          "Surpopulation humaine"
-        ],
-        answer: "Destruction des habitats"
-      },
-      {
-        theme: "🌱 Biodiversité",
-        question: "🌱 Biodiversité — Question 6 : Quel est l’effet de l’introduction d’espèces invasives ?",
-        choices: [
-          "Augmentation de la biodiversité locale",
-          "Déséquilibre écologique",
-          "Meilleure qualité de l’air",
-          "Réduction des risques naturels"
-        ],
-        answer: "Déséquilibre écologique"
-      },
-      {
-        theme: "♻️ Impacts sur Wallis et Futuna",
-        question: "♻️ Impacts sur Wallis et Futuna — Question 7 : Quelle est la principale menace environnementale locale ?",
-        choices: [
-          "Pollution plastique",
-          "Déforestation",
-          "Érosion côtière",
-          "Surpêche"
-        ],
-        answer: "Érosion côtière"
-      },
-      {
-        theme: "♻️ Impacts sur Wallis et Futuna",
-        question: "♻️ Impacts sur Wallis et Futuna — Question 8 : Quelle énergie est la plus utilisée sur l’archipel ?",
-        choices: [
-          "Solaire",
-          "Charbon",
-          "Fioul",
-          "Hydraulique"
-        ],
-        answer: "Fioul"
-      },
-      {
-        theme: "♻️ Impacts sur Wallis et Futuna",
-        question: "♻️ Impacts sur Wallis et Futuna — Question 9 : Quelle action locale aide à protéger l’environnement ?",
-        choices: [
-          "Reboisement",
-          "Augmentation du plastique",
-          "Construction de nouvelles routes",
-          "Chasse intensive"
-        ],
-        answer: "Reboisement"
-      },
-      {
-        theme: "⚡ Énergie",
-        question: "⚡ Énergie — Question 10 : Quelle source d’énergie est renouvelable ?",
-        choices: ["Pétrole", "Charbon", "Éolienne", "Gaz naturel"],
-        answer: "Éolienne"
-      },
-      {
-        theme: "⚡ Énergie",
-        question: "⚡ Énergie — Question 11 : Quel est l’impact principal des énergies fossiles ?",
-        choices: [
-          "Pollution de l’air",
-          "Réchauffement climatique",
-          "Augmentation de la biodiversité",
-          "Ressources infinies"
-        ],
-        answer: "Réchauffement climatique"
-      },
-      {
-        theme: "⚡ Énergie",
-        question: "⚡ Énergie — Question 12 : Quelle énergie produit le plus de CO2 ?",
-        choices: ["Nucléaire", "Charbon", "Solaire", "Hydraulique"],
-        answer: "Charbon"
-      },
-      {
-        theme: "🗑️ Déchets",
-        question: "🗑️ Déchets — Question 16 : Quel est le principal problème des déchets plastiques ?",
-        choices: [
-          "Ils se décomposent rapidement",
-          "Ils polluent les océans",
-          "Ils enrichissent le sol",
-          "Ils sont biodégradables"
-        ],
-        answer: "Ils polluent les océans"
-      },
-      {
-        theme: "🗑️ Déchets",
-        question: "🗑️ Déchets — Question 17 : Quelle solution réduit la production de déchets ?",
-        choices: [
-          "Recycler",
-          "Réutiliser",
-          "Réduire",
-          "Tout ce qui précède"
-        ],
-        answer: "Tout ce qui précède"
-      },
-      {
-        theme: "🗑️ Déchets",
-        question: "🗑️ Déchets — Question 18 : Qu’est-ce que le compostage ?",
-        choices: [
-          "Brûler les déchets",
-          "Transformer les déchets organiques en terreau",
-          "Jeter les déchets dans la nature",
-          "Réutiliser les déchets plastiques"
-        ],
-        answer: "Transformer les déchets organiques en terreau"
-      }
+      {theme:"🌊 Océan",question:"🌊 Océan — Question 1 : Quelle est la principale cause de la pollution marine ?",choices:["Rejets industriels","Pollution par pesticides et engrais","Tourisme","Pêche intensive"],answer:"Pollution par pesticides et engrais"},
+      {theme:"🌤️ Climat",question:"🌤️ Climat — Question 1 : Qu’est-ce que le réchauffement climatique ?",choices:["Une période de froid intense","L’augmentation moyenne des températures sur Terre","Une nouvelle ère glaciaire","Un phénomène naturel sans influence humaine"],answer:"L’augmentation moyenne des températures sur Terre"},
+      {theme:"🌤️ Climat",question:"🌤️ Climat — Question 2 : Quel gaz est principalement responsable de l’effet de serre ?",choices:["Oxygène","Dioxyde de carbone","Azote","Hélium"],answer:"Dioxyde de carbone"},
+      {theme:"🌤️ Climat",question:"🌤️ Climat — Question 3 : Quel secteur est le plus gros émetteur de gaz à effet de serre ?",choices:["Transport","Agriculture","Industrie","Énergie"],answer:"Énergie"},
+      {theme:"🌱 Biodiversité",question:"🌱 Biodiversité — Question 4 : Pourquoi la biodiversité est-elle importante ?",choices:["Pour le plaisir visuel","Pour l’équilibre des écosystèmes","Parce que c’est obligatoire","Pour produire plus de déchets"],answer:"Pour l’équilibre des écosystèmes"},
+      {theme:"🌱 Biodiversité",question:"🌱 Biodiversité — Question 5 : Quelle est la principale cause de la perte de biodiversité ?",choices:["Pollution","Changements climatiques","Destruction des habitats","Surpopulation humaine"],answer:"Destruction des habitats"},
+      {theme:"🌱 Biodiversité",question:"🌱 Biodiversité — Question 6 : Quel est l’effet de l’introduction d’espèces invasives ?",choices:["Augmentation de la biodiversité locale","Déséquilibre écologique","Meilleure qualité de l’air","Réduction des risques naturels"],answer:"Déséquilibre écologique"},
+      {theme:"♻️ Impacts sur Wallis et Futuna",question:"♻️ Impacts sur Wallis et Futuna — Question 7 : Quelle est la principale menace environnementale locale ?",choices:["Pollution plastique","Déforestation","Érosion côtière","Surpêche"],answer:"Érosion côtière"},
+      {theme:"♻️ Impacts sur Wallis et Futuna",question:"♻️ Impacts sur Wallis et Futuna — Question 8 : Quelle énergie est la plus utilisée sur l’archipel ?",choices:["Solaire","Charbon","Fioul","Hydraulique"],answer:"Fioul"},
+      {theme:"♻️ Impacts sur Wallis et Futuna",question:"♻️ Impacts sur Wallis et Futuna — Question 9 : Quelle action locale aide à protéger l’environnement ?",choices:["Reboisement","Augmentation du plastique","Construction de nouvelles routes","Chasse intensive"],answer:"Reboisement"},
+      {theme:"⚡ Énergie",question:"⚡ Énergie — Question 10 : Quelle source d’énergie est renouvelable ?",choices:["Pétrole","Charbon","Éolienne","Gaz naturel"],answer:"Éolienne"},
+      {theme:"⚡ Énergie",question:"⚡ Énergie — Question 11 : Quel est l’impact principal des énergies fossiles ?",choices:["Pollution de l’air","Réchauffement climatique","Augmentation de la biodiversité","Ressources infinies"],answer:"Réchauffement climatique"},
+      {theme:"⚡ Énergie",question:"⚡ Énergie — Question 12 : Quelle énergie produit le plus de CO2 ?",choices:["Nucléaire","Charbon","Solaire","Hydraulique"],answer:"Charbon"},
+      {theme:"🗑️ Déchets",question:"🗑️ Déchets — Question 16 : Quel est le principal problème des déchets plastiques ?",choices:["Ils se décomposent rapidement","Ils polluent les océans","Ils enrichissent le sol","Ils sont biodégradables"],answer:"Ils polluent les océans"},
+      {theme:"🗑️ Déchets",question:"🗑️ Déchets — Question 17 : Quelle solution réduit la production de déchets ?",choices:["Recycler","Réutiliser","Réduire","Tout ce qui précède"],answer:"Tout ce qui précède"},
+      {theme:"🗑️ Déchets",question:"🗑️ Déchets — Question 18 : Qu’est-ce que le compostage ?",choices:["Brûler les déchets","Transformer les déchets organiques en terreau","Jeter les déchets dans la nature","Réutiliser les déchets plastiques"],answer:"Transformer les déchets organiques en terreau"}
     ];
 
-    // Variables globales
     let currentQuestionIndex = 0;
     let score = 0;
     let selectedMode = "normal";
     let selectedTheme = "";
     let timerInterval = null;
-    let timePerQuestion = 15; // secondes
+    let timePerQuestion = 15;
     let timeLeft = timePerQuestion;
 
     const menu = document.getElementById('menu');
     const quizContainer = document.getElementById('quiz-container');
     const resultContainer = document.getElementById('result-container');
-
     const themeDisplay = document.getElementById('theme');
     const questionEl = document.getElementById('question');
     const answersEl = document.getElementById('answers');
@@ -392,12 +193,10 @@
     const nextBtn = document.getElementById('next-btn');
     const backToMenuDuringQuizBtn = document.getElementById('back-to-menu-during-quiz-btn');
     const backToMenuBtn = document.getElementById('back-to-menu-btn');
-
     const modeSelect = document.getElementById('mode-select');
     const themeSelect = document.getElementById('theme-select');
     const startBtn = document.getElementById('start-btn');
 
-    // Event listeners
     startBtn.addEventListener('click', startQuiz);
     nextBtn.addEventListener('click', () => {
       currentQuestionIndex++;
@@ -409,40 +208,27 @@
     });
     backToMenuBtn.addEventListener('click', resetQuiz);
     backToMenuDuringQuizBtn.addEventListener('click', resetQuiz);
+    modeSelect.addEventListener('change', e => { selectedMode = e.target.value; });
+    themeSelect.addEventListener('change', e => { selectedTheme = e.target.value; });
 
-    modeSelect.addEventListener('change', e => {
-      selectedMode = e.target.value;
-    });
-
-    themeSelect.addEventListener('change', e => {
-      selectedTheme = e.target.value;
-    });
-
-    // Filtrer les questions selon le thème choisi
     let filteredQuestions = [];
 
     function startQuiz() {
-      // Valider la sélection du thème
       if (selectedTheme === "") {
         alert("Veuillez choisir une thématique.");
         return;
       }
-
       menu.classList.add('hidden');
       resultContainer.classList.add('hidden');
       quizContainer.classList.remove('hidden');
       backToMenuDuringQuizBtn.classList.remove('hidden');
-
       currentQuestionIndex = 0;
       score = 0;
-
-      // Filtrer les questions
       if (selectedTheme === "aleatoire") {
         filteredQuestions = [...questions].sort(() => Math.random() - 0.5);
       } else {
         filteredQuestions = questions.filter(q => q.theme === selectedTheme);
       }
-
       setNextQuestion();
     }
 
@@ -456,7 +242,6 @@
       themeDisplay.textContent = questionObj.theme;
       questionEl.textContent = questionObj.question;
       answersEl.innerHTML = '';
-
       questionObj.choices.forEach(choice => {
         const button = document.createElement('button');
         button.textContent = choice;
@@ -479,22 +264,17 @@
     function selectAnswer(selectedButton, correctAnswer) {
       clearInterval(timerInterval);
       const buttons = answersEl.querySelectorAll('button');
-
       buttons.forEach(button => {
         setStatusClass(button, button.textContent === correctAnswer);
         button.disabled = true;
       });
-
       if (selectedButton.textContent === correctAnswer) {
         score++;
       }
-
       nextBtn.classList.remove('hidden');
-
       if (selectedMode === 'battle') {
         nextBtn.textContent = "Suivant";
       } else {
-        // En mode normal, on peut passer automatiquement au suivant
         setTimeout(() => {
           currentQuestionIndex++;
           if (currentQuestionIndex < filteredQuestions.length) {
@@ -528,7 +308,6 @@
         updateTimerUI();
         if (timeLeft <= 0) {
           clearInterval(timerInterval);
-          // Révéler la bonne réponse
           const correctAnswer = filteredQuestions[currentQuestionIndex].answer;
           const buttons = answersEl.querySelectorAll('button');
           buttons.forEach(button => {
@@ -552,10 +331,8 @@
       quizContainer.classList.add('hidden');
       backToMenuDuringQuizBtn.classList.add('hidden');
       resultContainer.classList.remove('hidden');
-
       const total = filteredQuestions.length;
       const percent = Math.round((score / total) * 100);
-
       let message = "";
       if (percent === 100) {
         message = "Parfait ! Vous êtes un.e expert.e de l’écologie ! 🌿";
@@ -566,7 +343,6 @@
       } else {
         message = "Il faut réviser un peu plus l’écologie ! 🌎";
       }
-
       document.getElementById('result-text').textContent = `Vous avez obtenu ${score} bonnes réponses sur ${total} (${percent}%). ${message}`;
       document.getElementById('citation').textContent = '“La Terre ne nous appartient pas, nous l’empruntons à nos enfants.” – Antoine de Saint-Exupéry';
     }
