@@ -2,294 +2,143 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Quiz Écologie</title>
+  <title>Quiz Écologie Futuriste</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #e0f7e9;
-      margin: 0; padding: 0;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: flex-start;
-      min-height: 100vh;
-      color: #2a3d2d;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(135deg, #001f25, #083a3d);
+      color: #A7F3D0;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 650px;
+      background: rgba(20, 35, 30, 0.9);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 20px #00FFBF;
+      text-align: center;
     }
     h1 {
-      margin-top: 20px;
-      font-weight: 700;
-      text-align: center;
-      color: #236f3e;
-    }
-    #menu, #quiz-container, #result-container {
-      max-width: 600px;
-      width: 90%;
-      background: #f5fff9;
-      border-radius: 10px;
-      padding: 20px 25px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      margin: 20px auto;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #00FFBF;
+      text-shadow: 0 0 10px #00FFBF;
     }
     select, button {
-      padding: 10px 15px;
-      margin: 10px 5px 20px 0;
       font-size: 1rem;
-      border-radius: 6px;
-      border: 2px solid #4caf50;
-      background: #c7f1d1;
-      color: #2a3d2d;
+      padding: 0.7rem 1.2rem;
+      margin: 0.5rem;
+      border-radius: 8px;
+      border: none;
+      font-family: 'Orbitron', sans-serif;
       cursor: pointer;
-      transition: background 0.3s ease;
+      background: #14532D;
+      color: #A7F3D0;
+      box-shadow: 0 0 8px #00FFBF;
+      transition: all 0.2s ease;
     }
-    button:hover:not(:disabled), select:hover {
-      background: #98d99f;
+    select:hover, button:hover:not(:disabled) {
+      background: #00FFBF;
+      color: #001f12;
+      box-shadow: 0 0 15px #00FFBF;
     }
     button:disabled {
-      cursor: not-allowed;
-      opacity: 0.6;
+      opacity: 0.5;
+      cursor: default;
+      box-shadow: none;
     }
-    #answers button {
-      display: block;
-      width: 100%;
-      margin: 8px 0;
-      text-align: left;
-      font-weight: 600;
-    }
-    .correct {
-      background-color: #a1d99b !important;
-      border-color: #4caf50 !important;
-      color: #1b3816 !important;
-    }
-    .incorrect {
-      background-color: #f28b82 !important;
-      border-color: #d32f2f !important;
-      color: #5a1a1a !important;
+    .hidden { display: none; }
+    .question {
+      font-size: 1.3rem;
+      margin: 1rem 0;
+      color: #A7F3D0;
     }
     #timer {
-      font-weight: 700;
-      margin-bottom: 15px;
-      color: #236f3e;
+      font-weight: bold;
+      color: #00FFBF;
+      text-shadow: 0 0 8px #00FFBF;
     }
     #timer-bar {
-      width: 100%;
-      height: 10px;
-      background: #a9d5a7;
-      border-radius: 6px;
+      background: #083a3d;
+      height: 8px;
+      border-radius: 4px;
       overflow: hidden;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
     }
     #timer-progress {
       height: 100%;
-      background: #4caf50;
       width: 100%;
+      background: #00FFBF;
       transition: width 1s linear;
     }
-    .hidden {
-      display: none;
+    button.correct {
+      background: #00FFBF !important;
+      color: #001f12 !important;
+      box-shadow: 0 0 15px #A7F3D0 !important;
     }
-    #theme {
-      font-weight: 700;
-      margin-bottom: 10px;
-      font-size: 1.1rem;
-      color: #317a33;
-    }
-    #next-btn, #back-to-menu-btn, #back-to-menu-during-quiz-btn {
-      background: #4caf50;
-      border-color: #3e8e41;
-      color: #e9f9e9;
-      font-weight: 700;
-      margin-top: 15px;
-    }
-    #next-btn.hidden, #back-to-menu-during-quiz-btn.hidden {
-      display: none;
+    button.incorrect {
+      background: #FF0044 !important;
+      color: #330000 !important;
+      box-shadow: 0 0 15px #FF0044 !important;
     }
     #result-text {
-      font-size: 1.2rem;
-      font-weight: 600;
-      margin-bottom: 15px;
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+    .citation {
+      font-style: italic;
+      margin-top: 1rem;
+      color: #A7F3D0;
     }
   </style>
 </head>
 <body>
-  <h1>Quiz Écologie</h1>
-  <div id="menu">
-    <label for="mode-select">Choisissez le mode :</label>
-    <select id="mode-select">
-      <option value="normal" selected>Normal</option>
-      <option value="battle">Battle</option>
-    </select>
-    <br />
-    <label for="theme-select">Choisissez la thématique :</label>
-    <select id="theme-select">
-      <option value="" selected disabled>-- Sélectionnez --</option>
-      <option value="aleatoire">Aléatoire</option>
-      <option value="🌊 Océan">🌊 Océan</option>
-      <option value="🌤️ Climat">🌤️ Climat</option>
-      <option value="🌱 Biodiversité">🌱 Biodiversité</option>
-      <option value="♻️ Impacts sur Wallis et Futuna">♻️ Impacts sur Wallis et Futuna</option>
-      <option value="⚡ Énergie">⚡ Énergie</option>
-      <option value="🗑️ Déchets">🗑️ Déchets</option>
-    </select>
-    <br />
-    <button id="start-btn">Démarrer le quiz</button>
+  <div class="container">
+    <div id="menu">
+      <h1>🌍 Quiz Écologie Futuriste</h1>
+      <label for="mode-select">Mode de jeu :</label>
+      <select id="mode-select">
+        <option value="normal">Normal</option>
+        <option value="battle">Battle</option>
+      </select><br>
+      <label for="theme-select">Thématique :</label>
+      <select id="theme-select">
+        <option value="">-- Choisir --</option>
+        <option value="💧 Eau">💧 Eau</option>
+        <option value="🌤️ Climat">🌤️ Climat</option>
+        <option value="🌱 Biodiversité">🌱 Biodiversité</option>
+        <option value="♻️ Impacts sur Wallis et Futuna">♻️ Impacts sur Wallis et Futuna</option>
+        <option value="⚡ Énergie">⚡ Énergie</option>
+        <option value="🗑️ Déchets">🗑️ Déchets</option>
+        <option value="aleatoire">🎲 Aléatoire</option>
+      </select><br>
+      <button id="start-btn">Commencer le quiz</button>
+    </div>
+
+    <div id="quiz-container" class="hidden">
+      <div id="theme"></div>
+      <div id="question" class="question"></div>
+      <div id="timer-bar"><div id="timer-progress"></div></div>
+      <div id="timer"></div>
+      <div id="answers"></div>
+      <button id="next-btn" class="hidden">Suivant</button>
+    </div>
+
+    <div id="result-container" class="hidden">
+      <p id="result-text"></p>
+      <p id="citation" class="citation"></p>
+      <button id="back-to-menu-btn">Retour au menu</button>
+    </div>
+
+    <button id="back-to-menu-during-quiz-btn" class="hidden">Retour au menu</button>
   </div>
 
-  <div id="quiz-container" class="hidden">
-    <div id="theme"></div>
-    <div id="question"></div>
-    <div id="answers"></div>
-    <div id="timer"></div>
-    <div id="timer-bar"><div id="timer-progress"></div></div>
-    <button id="next-btn" class="hidden">Suivant</button>
-    <button id="back-to-menu-during-quiz-btn">Retour au menu</button>
-  </div>
-
-  <div id="result-container" class="hidden">
-    <div id="result-text"></div>
-    <button id="back-to-menu-btn">Retour au menu</button>
-  </div>
-
-  <script>
-    const questions = [
-      {theme:"🌊 Océan",question:"🌊 Océan — Question 1 : Quelle est la principale cause de la pollution marine ?",choices:["Rejets industriels","Pollution par pesticides et engrais","Tourisme","Pêche intensive"],answer:"Pollution par pesticides et engrais"},
-      {theme:"🌤️ Climat",question:"🌤️ Climat — Question 1 : Qu’est-ce que le réchauffement climatique ?",choices:["Une période de froid intense","L’augmentation moyenne des températures sur Terre","Une nouvelle ère glaciaire","Un phénomène naturel sans influence humaine"],answer:"L’augmentation moyenne des températures sur Terre"},
-      {theme:"🌤️ Climat",question:"🌤️ Climat — Question 2 : Quel gaz est principalement responsable de l’effet de serre ?",choices:["Oxygène","Dioxyde de carbone","Azote","Hélium"],answer:"Dioxyde de carbone"},
-      {theme:"🌤️ Climat",question:"🌤️ Climat — Question 3 : Quel secteur est le plus gros émetteur de gaz à effet de serre ?",choices:["Transport","Agriculture","Industrie","Énergie"],answer:"Énergie"},
-      {theme:"🌱 Biodiversité",question:"🌱 Biodiversité — Question 4 : Pourquoi la biodiversité est-elle importante ?",choices:["Pour le plaisir visuel","Pour l’équilibre des écosystèmes","Parce que c’est obligatoire","Pour produire plus de déchets"],answer:"Pour l’équilibre des écosystèmes"},
-      {theme:"🌱 Biodiversité",question:"🌱 Biodiversité — Question 5 : Quelle est la principale cause de la perte de biodiversité ?",choices:["Pollution","Changements climatiques","Destruction des habitats","Surpopulation humaine"],answer:"Destruction des habitats"},
-      {theme:"🌱 Biodiversité",question:"🌱 Biodiversité — Question 6 : Quel est l’effet de l’introduction d’espèces invasives ?",choices:["Augmentation de la biodiversité locale","Déséquilibre écologique","Meilleure qualité de l’air","Réduction des risques naturels"],answer:"Déséquilibre écologique"},
-      {theme:"♻️ Impacts sur Wallis et Futuna",question:"♻️ Impacts sur Wallis et Futuna — Question 7 : Quelle est la principale menace environnementale locale ?",choices:["Pollution plastique","Déforestation","Érosion côtière","Surpêche"],answer:"Érosion côtière"},
-      {theme:"♻️ Impacts sur Wallis et Futuna",question:"♻️ Impacts sur Wallis et Futuna — Question 8 : Quelle énergie est la plus utilisée sur l’archipel ?",choices:["Solaire","Charbon","Fioul","Hydraulique"],answer:"Fioul"},
-      {theme:"♻️ Impacts sur Wallis et Futuna",question:"♻️ Impacts sur Wallis et Futuna — Question 9 : Quelle action locale aide à protéger l’environnement ?",choices:["Reboisement","Augmentation du plastique","Construction de nouvelles routes","Chasse intensive"],answer:"Reboisement"},
-      {theme:"⚡ Énergie",question:"⚡ Énergie — Question 10 : Quelle source d’énergie est renouvelable ?",choices:["Pétrole","Charbon","Éolienne","Gaz naturel"],answer:"Éolienne"},
-      {theme:"⚡ Énergie",question:"⚡ Énergie — Question 11 : Quel est l’impact principal des énergies fossiles ?",choices:["Pollution de l’air","Réchauffement climatique","Augmentation de la biodiversité","Ressources infinies"],answer:"Réchauffement climatique"},
-      {theme:"⚡ Énergie",question:"⚡ Énergie — Question 12 : Quelle énergie produit le plus de CO2 ?",choices:["Nucléaire","Charbon","Solaire","Hydraulique"],answer:"Charbon"},
-      {theme:"🗑️ Déchets",question:"🗑️ Déchets — Question 16 : Quel est le principal problème des déchets plastiques ?",choices:["Ils se décomposent rapidement","Ils polluent les océans","Ils enrichissent le sol","Ils sont biodégradables"],answer:"Ils polluent les océans"},
-      {theme:"🗑️ Déchets",question:"🗑️ Déchets — Question 17 : Quelle solution réduit la production de déchets ?",choices:["Recycler","Réutiliser","Réduire","Tout ce qui précède"],answer:"Tout ce qui précède"},
-      {theme:"🗑️ Déchets",question:"🗑️ Déchets — Question 18 : Qu’est-ce que le compostage ?",choices:["Brûler les déchets","Transformer les déchets organiques en terreau","Jeter les déchets dans la nature","Réutiliser les déchets plastiques"],answer:"Transformer les déchets organiques en terreau"}
-    ];
-
-    let currentQuestionIndex = 0;
-    let score = 0;
-    let selectedMode = "normal";
-    let selectedTheme = "";
-    let timerInterval = null;
-    let timePerQuestion = 15;
-    let timeLeft = timePerQuestion;
-
-    const menu = document.getElementById('menu');
-    const quizContainer = document.getElementById('quiz-container');
-    const resultContainer = document.getElementById('result-container');
-    const themeDisplay = document.getElementById('theme');
-    const questionEl = document.getElementById('question');
-    const answersEl = document.getElementById('answers');
-    const timerEl = document.getElementById('timer');
-    const timerBar = document.getElementById('timer-progress');
-    const nextBtn = document.getElementById('next-btn');
-    const backToMenuDuringQuizBtn = document.getElementById('back-to-menu-during-quiz-btn');
-    const backToMenuBtn = document.getElementById('back-to-menu-btn');
-    const modeSelect = document.getElementById('mode-select');
-    const themeSelect = document.getElementById('theme-select');
-    const startBtn = document.getElementById('start-btn');
-
-    startBtn.addEventListener('click', startQuiz);
-    nextBtn.addEventListener('click', () => {
-      currentQuestionIndex++;
-      if (currentQuestionIndex < filteredQuestions.length) {
-        setNextQuestion();
-      } else {
-        endQuiz();
-      }
-    });
-    backToMenuBtn.addEventListener('click', resetQuiz);
-    backToMenuDuringQuizBtn.addEventListener('click', resetQuiz);
-    modeSelect.addEventListener('change', e => { selectedMode = e.target.value; });
-    themeSelect.addEventListener('change', e => { selectedTheme = e.target.value; });
-
-    let filteredQuestions = [];
-
-    function startQuiz() {
-      if (selectedTheme === "") {
-        alert("Veuillez choisir une thématique.");
-        return;
-      }
-      menu.classList.add('hidden');
-      resultContainer.classList.add('hidden');
-      quizContainer.classList.remove('hidden');
-      backToMenuDuringQuizBtn.classList.remove('hidden');
-      currentQuestionIndex = 0;
-      score = 0;
-      if (selectedTheme === "aleatoire") {
-        filteredQuestions = [...questions].sort(() => Math.random() - 0.5);
-      } else {
-        filteredQuestions = questions.filter(q => q.theme === selectedTheme);
-      }
-      setNextQuestion();
-    }
-
-    function setNextQuestion() {
-      resetState();
-      showQuestion(filteredQuestions[currentQuestionIndex]);
-      startTimer();
-    }
-
-    function showQuestion(questionObj) {
-      themeDisplay.textContent = questionObj.theme;
-      questionEl.textContent = questionObj.question;
-      answersEl.innerHTML = '';
-      questionObj.choices.forEach(choice => {
-        const button = document.createElement('button');
-        button.textContent = choice;
-        button.addEventListener('click', () => selectAnswer(button, questionObj.answer));
-        answersEl.appendChild(button);
-      });
-    }
-
-    function resetState() {
-      clearStatusClass(document.body);
-      nextBtn.classList.add('hidden');
-      while (answersEl.firstChild) {
-        answersEl.removeChild(answersEl.firstChild);
-      }
-      clearInterval(timerInterval);
-      timeLeft = timePerQuestion;
-      updateTimerUI();
-    }
-
-    function selectAnswer(selectedButton, correctAnswer) {
-      clearInterval(timerInterval);
-      const buttons = answersEl.querySelectorAll('button');
-      buttons.forEach(button => {
-        setStatusClass(button, button.textContent === correctAnswer);
-        button.disabled = true;
-      });
-      if (selectedButton.textContent === correctAnswer) {
-        score++;
-      }
-      nextBtn.classList.remove('hidden');
-      if (selectedMode === 'battle') {
-        nextBtn.textContent = "Suivant
-
-
-
-
-
-Vous avez dit :
-non je veux qu'il faut avoir des citations à la fin de chaque quiz mais là il y en a pas, Pourquoi ? : https://elyahau.github.io/quiz-wf/
-
-
-ChatGPT a dit :
-Merci pour la précision ! Je viens de regarder le site https://elyahau.github.io/quiz-wf/ et le quiz affiche bien des citations à la fin de chaque quiz, donc si tu ne vois pas de citation à la fin dans ta version, c’est sûrement lié à un problème dans le code qui affiche ou récupère ces citations.
-
-Voici les points à vérifier dans ton code ou à intégrer pour afficher des citations à la fin du quiz :
-1. Assure-toi d’avoir un tableau de citations liées aux résultats
-Par exemple, dans le code source du quiz sur ce site, il y a souvent un tableau avec des citations, quelque chose comme :
-
-js
-Copier
-Modifier
-const citations = [
-  "« La Terre ne nous appartient pas, nous l’empruntons à nos enfants. » – Antoine de Saint-Exupéry",
-  "« Protéger la nature, c’est protéger notre avenir. » – Inconnu",
-  "« Chaque petit geste compte pour sauver la planète. » – Inconnu",
-  // etc...
-];
+  <script src="quiz.js"></script>
+</body>
+</html>
