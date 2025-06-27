@@ -269,37 +269,29 @@ const citations = [
   "“Sauver notre planète, c’est sauver notre maison.” – Leonardo DiCaprio",
   "“Nous n'héritons pas de la Terre de nos ancêtres, nous l'empruntons à nos enfants.” – Antoine de Saint-Exupéry",
   "“Chaque geste compte, aussi petit soit-il.” – Anonyme",
-  "“Tou haofaki te kahau o te tou'u fanau.” – Wallisien"
+  "“Tou haofaki te kahau o te tou'u fanau.” – Wallisien",
   "“Fakaʻapaʻapa ki he fenua mo e vai.” – Futunien"
-
 ];
+
 const startBtn = document.getElementById("start-btn");
 const nextBtn = document.getElementById("next-btn");
 const questionContainer = document.getElementById("question-container");
-const questionElement = document.getElementById("question");
-const answerButtons = document.getElementById("answer-buttons");
+const questionDisplay = document.getElementById("question");
+const answersContainer = document.getElementById("answer-buttons");
 const resultContainer = document.getElementById("result-container");
 const resultText = document.getElementById("result-text");
+const timerDisplay = document.getElementById("timer");
 const backToMenuBtn = document.getElementById("back-to-menu-btn");
-const timerElement = document.getElementById("timer");
-const themeSelector = document.getElementById("theme-selector");
 const backToMenuDuringQuizBtn = document.getElementById("back-to-menu-during-quiz-btn");
-
+const themeSelector = document.getElementById("theme-selector");
+const themeSelect = document.getElementById("theme-select");
+const menu = document.getElementById("menu");
 
 let shuffledQuestions = [];
 let currentQuestionIndex = 0;
 let score = 0;
 let timerId = null;
 let timeLeft = 20;
-
-const themeSelect = document.getElementById('theme-select');
-const startBtn = document.getElementById('start-btn');
-const menu = document.getElementById('menu');
-const questionDisplay = document.getElementById('question');
-const answersContainer = document.getElementById('answer-buttons');
-const nextBtn = document.getElementById('next-btn');
-const timerDisplay = document.getElementById('timer');
-const backToMenuDuringQuizBtn = document.getElementById('back-to-menu-during-quiz-btn');
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -323,8 +315,8 @@ function startQuiz() {
   }
   shuffle(shuffledQuestions);
   menu.classList.add('hidden');
-  document.getElementById('question-container').classList.remove('hidden');
-  document.getElementById('back-to-menu-during-quiz-btn').classList.remove('hidden');
+  questionContainer.classList.remove('hidden');
+  backToMenuDuringQuizBtn.classList.remove('hidden');
   showQuestion();
 }
 
@@ -351,6 +343,7 @@ function showQuestion() {
   currentQuestion.choices.forEach(choice => {
     const button = document.createElement('button');
     button.textContent = choice;
+    button.classList.add('btn');
     button.addEventListener('click', selectAnswer);
     answersContainer.appendChild(button);
   });
@@ -423,20 +416,24 @@ function endQuiz() {
   else if (ratio >= 0.8) message = "👍 Très bien joué !";
   else if (ratio >= 0.5) message = "😊 Pas mal, continue !";
   else message = "💪 Encore un effort !";
+
   const scoreMsg = document.createElement('p');
   scoreMsg.id = 'score-message';
   scoreMsg.textContent = message;
   answersContainer.appendChild(scoreMsg);
+
   const citation = document.createElement('p');
   citation.id = 'citation';
-  citation.textContent = '“La Terre ne nous appartient pas, nous l’empruntons à nos enfants.” – Proverbe amérindien';
+  citation.textContent = citations[Math.floor(Math.random() * citations.length)];
   answersContainer.appendChild(citation);
+
   const backBtn = document.createElement('button');
   backBtn.id = 'back-btn';
   backBtn.textContent = 'Retour au menu';
+  backBtn.classList.add('btn');
   backBtn.addEventListener('click', () => {
-    document.getElementById('question-container').classList.add('hidden');
-    document.getElementById('back-to-menu-during-quiz-btn').classList.add('hidden');
+    questionContainer.classList.add('hidden');
+    backToMenuDuringQuizBtn.classList.add('hidden');
     menu.classList.remove('hidden');
     themeSelect.value = "";
   });
@@ -445,9 +442,10 @@ function endQuiz() {
 
 startBtn.addEventListener('click', startQuiz);
 nextBtn.addEventListener('click', nextQuestion);
+
 backToMenuDuringQuizBtn.addEventListener('click', () => {
   clearInterval(timerId);
-  document.getElementById('question-container').classList.add('hidden');
+  questionContainer.classList.add('hidden');
   backToMenuDuringQuizBtn.classList.add('hidden');
   menu.classList.remove('hidden');
   themeSelect.value = "";
