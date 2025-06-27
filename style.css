@@ -66,3 +66,15 @@ button#start-btn:hover {
   margin-bottom: 15px;
   color: #1b3b26;
   text-align: ce
+  }
+
+#menu-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#theme-select {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+}
