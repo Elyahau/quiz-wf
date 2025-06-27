@@ -389,8 +389,10 @@ function showResult() {
   quizContainer.classList.add("hidden");
   backToMenuDuringQuizBtn.classList.add("hidden");
   resultContainer.classList.remove("hidden");
-
   resultText.textContent = `Quiz terminé ! Votre score : ${score} / ${shuffledQuestions.length}`;
+
+  const oldCitation = resultContainer.querySelector(".citation");
+  if (oldCitation) oldCitation.remove();
 
   const cite = citations[Math.floor(Math.random() * citations.length)];
   const p = document.createElement("p");
@@ -428,7 +430,6 @@ function resetQuiz() {
   resultContainer.classList.add("hidden");
   backToMenuDuringQuizBtn.classList.add("hidden");
   themeSelect.value = "";
-
   const oldCitation = resultContainer.querySelector(".citation");
   if (oldCitation) oldCitation.remove();
 }
