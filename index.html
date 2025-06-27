@@ -71,18 +71,21 @@
         <option value="🗑️ Déchets">🗑️ Déchets</option>
         <option value="aleatoire">🎲 Aléatoire</option>
       </select><br>
-      <button id="start-btn">Démarrer le quiz</button>
-    </div>
+     <button id="start-btn" class="btn">Commencer le quiz</button>
 
-    <div id="quiz-container" class="hidden">
-      <div id="theme"></div>
-      <div id="timer"></div>
-      <div id="question" class="question"></div>
-      <div id="answers" class="answers"></div>
-      <button id="next-btn" class="hidden">Question suivante</button>
-      <button id="back-to-menu-during-quiz-btn" class="hidden">Retour au menu</button>
-    </div>
+  <div id="question-container" class="hidden">
+    <div id="question" style="margin-top: 20px; font-weight: bold;"></div>
+    <div id="answer-buttons"></div>
+    <div id="timer"></div>
+    <button id="next-btn" class="btn hidden">Suivant</button>
   </div>
+
+  <div id="result-container" class="hidden">
+    <p id="result-text"></p>
+    <button id="back-to-menu-btn" class="btn">Retour au menu</button>
+  </div>
+
+  <button id="back-to-menu-during-quiz-btn" class="btn hidden">Retour au menu</button>
 
   <script>
     const questions = [
