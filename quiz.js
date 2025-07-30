@@ -18,15 +18,10 @@ const questions = {
       correct: 2
     },
       {
-    "question": "Quelle est la principale cause du changement climatique ?",
-    "answers": [
-      "La rotation de la Terre",
-      "Les émissions de gaz à effet de serre",
-      "Les marées lunaires",
-      "Les volcans"
-    ],
-    "correctAnswer": 1,
-    "explanation": "Les gaz à effet de serre, principalement dus aux activités humaines (industrie, transports), sont la principale cause du changement climatique."
+     question: "Quelle est la principale cause du changement climatique ?",
+     answers: ["La rotation de la Terre", "Les émissions de gaz à effet de serre", "Les marées lunaires", "Les volcans"],
+     correct: 1,
+     explication: "Les gaz à effet de serre, principalement dus aux activités humaines (industrie, transports), sont la principale cause du changement climatique."
   }
   ],
   "🌱 Biodiversité": [
