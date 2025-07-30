@@ -133,14 +133,13 @@ function showQuestion(index) {
 
 function handleAnswer(selectedIndex, btn) {
   const currentQ = currentQuestions[currentQuestionIndex];
-  const isCorrect = selectedIndex === currentQ.correct;
 
-  if (isCorrect) {
+  if (selectedIndex === currentQ.correct) {
     score++;
     if (btn) btn.classList.add("correct");
   } else {
     if (btn) btn.classList.add("incorrect");
-    const correctBtn = Array.from(answersContainer.children)[currentQ.correct];
+    const correctBtn = answersContainer.children[currentQ.correct];
     correctBtn.classList.add("correct");
   }
 
@@ -152,6 +151,7 @@ function handleAnswer(selectedIndex, btn) {
     explicationElement.classList.remove("hidden");
   }
 }
+
 
 function showResult() {
   quizContainer.classList.add("hidden");
