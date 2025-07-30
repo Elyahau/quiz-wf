@@ -107,8 +107,10 @@ backToMenuDuringQuizBtn.addEventListener("click", () => switchToMenu());
 function fadeOut(element, callback) {
   element.classList.remove('fade-in');
   element.classList.add('fade-out');
+  console.log("fadeOut start", element.id);
   element.addEventListener('animationend', function handler() {
     element.removeEventListener('animationend', handler);
+    console.log("fadeOut end", element.id);
     callback();
   });
 }
@@ -204,22 +206,26 @@ function switchToMenu() {
   backToMenuDuringQuizBtn.classList.add("hidden");
 
   const showMenu = () => {
+    console.log("showMenu called");
     fadeIn(menu);
   };
 
   if (!quizContainer.classList.contains("hidden")) {
+    console.log("fading quizContainer");
     fadeOut(quizContainer, () => {
       quizContainer.classList.add("hidden");
-
-      if (!resultContainer.classList.contains("hidden")) {
-        fadeOut(resultContainer, () => {
-          resultContainer.classList.add("hidden");
-          showMenu();
-        });
-      } else {
-        showMenu();
-      }
+      showMenu();
     });
+  } else if (!resultContainer.classList.contains("hidden")) {
+    console.log("fading resultContainer");
+    fadeOut(resultContainer, () => {
+      resultContainer.classList.add("hidden");
+      showMenu();
+    });
+  } else {
+    showMenu();
+  }
+} 
 
   } else if (!resultContainer.classList.contains("hidden")) {
     fadeOut(resultContainer, () => {
