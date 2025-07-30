@@ -90,6 +90,7 @@ button.incorrect {
   width: 320px;
   color: #d9f0d9;
   text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
 }
 
 #menu select, #menu button {
