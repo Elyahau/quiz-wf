@@ -107,18 +107,30 @@ backToMenuDuringQuizBtn.addEventListener("click", () => switchToMenu());
 function fadeOut(element, callback) {
   element.classList.remove('fade-in');
   element.classList.add('fade-out');
-  console.log("fadeOut start", element.id);
-  element.addEventListener('animationend', function handler() {
-    element.removeEventListener('animationend', handler);
-    console.log("fadeOut end", element.id);
+  let called = false;
+
+  function done() {
+    if (called) return;
+    called = true;
     callback();
+  }
+
+  element.addEventListener('animationend', () => {
+    element.classList.add('hidden');
+    done();
   });
+
+  setTimeout(() => {
+    element.classList.add('hidden');
+    done();
+  }, 600);
 }
 
 function fadeIn(element) {
+  element.classList.remove('hidden');
+  void element.offsetWidth;
   element.classList.remove('fade-out');
   element.classList.add('fade-in');
-  element.classList.remove('hidden');
 }
 
 function startQuiz(selectedTheme) {
