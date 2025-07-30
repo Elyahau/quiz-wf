@@ -112,6 +112,7 @@ function startQuiz() {
 function showQuestion(index) {
   clearTimeout(timer);
   nextBtn.classList.add("hidden");
+
   explicationElement.classList.add("hidden");
   explicationElement.textContent = "";
 
@@ -152,7 +153,6 @@ function handleAnswer(selectedIndex, btn) {
   }
 }
 
-
 function showResult() {
   quizContainer.classList.add("hidden");
   resultContainer.classList.remove("hidden");
@@ -186,7 +186,7 @@ function startTimer() {
     if (duration-- > 0) {
       timer = setTimeout(updateTimer, 1000);
     } else {
-      handleAnswer(false, null);
+      handleAnswer(-1, null);
     }
   }
   updateTimer();
