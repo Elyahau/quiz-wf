@@ -111,6 +111,8 @@ function showQuestion(index) {
     btn.textContent = answer;
     btn.onclick = () => handleAnswer(i === q.correct, btn);
     answersContainer.appendChild(btn);
+    explicationElement.classList.add("hidden");
+explicationElement.textContent = "";
   });
   startTimer();
 }
