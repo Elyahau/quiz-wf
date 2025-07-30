@@ -32,7 +32,7 @@ const quizContainer = document.getElementById("quiz-container");
 const themeDisplay = document.getElementById("theme");
 const questionDisplay = document.getElementById("question");
 const answersContainer = document.getElementById("answers");
-const timerDisplay = document.getElementById("timer");
+const timerDisplay = document.getElementById("timer-display");
 const timerProgress = document.getElementById("timer-progress");
 const timerBar = document.getElementById("timer-bar");
 const resultContainer = document.getElementById("result-container");
@@ -84,6 +84,7 @@ function showQuestion() {
     startTimer();
   } else {
     timerBar.classList.add("hidden");
+    timerDisplay.style.display = "none";
   }
   q.choices.forEach(c => {
     const b = document.createElement("button");
@@ -101,7 +102,7 @@ function startTimer() {
   timerId = setInterval(() => {
     timeLeft--;
     timerDisplay.textContent = `⏳ ${timeLeft}s`;
-    timerProgress.style.width = `${(timeLeft/MAX_TIME)*100}%`;
+    timerBar.style.width = `${(timeLeft/MAX_TIME)*100}%`;
     if (timeLeft <= 0) {
       clearInterval(timerId);
       selectAnswer("");
