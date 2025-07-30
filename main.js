@@ -88,6 +88,8 @@ const backToMenuDuringQuizBtn = document.getElementById("back-to-menu-during-qui
 const explicationElement = document.getElementById("explication");
 const menu = document.getElementById("menu");
 
+let isTransitioning = false;
+
 let currentQuestions = [];
 let currentQuestionIndex = 0;
 let score = 0;
@@ -104,29 +106,38 @@ nextBtn.addEventListener("click", () => showQuestion(++currentQuestionIndex));
 backToMenuBtn.addEventListener("click", () => switchToMenu());
 backToMenuDuringQuizBtn.addEventListener("click", () => switchToMenu());
 
-function fadeOut(element, callback) {
+function fadeOut(element, callback = () => {}) {
   if (element.classList.contains("hidden")) return callback();
 
-  element.classList.remove('fade-in');
-  element.classList.add('fade-out');
+  element.classList.remove("fade-in");
+  element.classList.add("fade-out");
 
   const onEnd = () => {
-    element.removeEventListener('animationend', onEnd);
-    element.classList.add('hidden');
-    element.classList.remove('fade-out');
+    element.removeEventListener("animationend", onEnd);
+    element.classList.add("hidden");
+    element.classList.remove("fade-out");
     callback();
   };
 
-  element.addEventListener('animationend', onEnd);
+  element.addEventListener("animationend", onEnd);
 
-  setTimeout(onEnd, 700);
+  setTimeout(onEnd, 600);
 }
 
-function fadeIn(element) {
-  element.classList.remove('hidden');
+function fadeIn(element, callback = () => {}) {
+  element.classList.remove("hidden");
   void element.offsetWidth;
-  element.classList.remove('fade-out');
-  element.classList.add('fade-in');
+  element.classList.remove("fade-out");
+  element.classList.add("fade-in");
+
+  const onEnd = () => {
+    element.removeEventListener("animationend", onEnd);
+    callback();
+  };
+
+  element.addEventListener("animationend", onEnd);
+
+  setTimeout(callback, 600);
 }
 
 function startQuiz(selectedTheme) {
@@ -217,20 +228,15 @@ function switchToMenu() {
   backToMenuDuringQuizBtn.classList.add("hidden");
 
   const showMenu = () => {
-    fadeIn(menu);
-    isTransitioning = false;
+    fadeIn(menu, () => {
+      isTransitioning = false;
+    });
   };
 
   if (!quizContainer.classList.contains("hidden")) {
-    fadeOut(quizContainer, () => {
-      quizContainer.classList.add("hidden");
-      showMenu();
-    });
+    fadeOut(quizContainer, showMenu);
   } else if (!resultContainer.classList.contains("hidden")) {
-    fadeOut(resultContainer, () => {
-      resultContainer.classList.add("hidden");
-      showMenu();
-    });
+    fadeOut(resultContainer, showMenu);
   } else {
     showMenu();
   }
