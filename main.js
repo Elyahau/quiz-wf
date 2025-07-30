@@ -201,6 +201,11 @@ function showResult() {
 
 function switchToMenu() {
   clearTimeout(timer);
+  backToMenuDuringQuizBtn.classList.add("hidden");
+
+  const showMenu = () => {
+    fadeIn(menu);
+  };
 
   if (!quizContainer.classList.contains("hidden")) {
     fadeOut(quizContainer, () => {
@@ -209,19 +214,20 @@ function switchToMenu() {
       if (!resultContainer.classList.contains("hidden")) {
         fadeOut(resultContainer, () => {
           resultContainer.classList.add("hidden");
-          fadeIn(menu);
+          showMenu();
         });
       } else {
-        fadeIn(menu);
+        showMenu();
       }
     });
+
   } else if (!resultContainer.classList.contains("hidden")) {
     fadeOut(resultContainer, () => {
       resultContainer.classList.add("hidden");
-      fadeIn(menu);
+      showMenu();
     });
   } else {
-    fadeIn(menu);
+    showMenu();
   }
 }
 
