@@ -67,10 +67,14 @@ button.incorrect {
 
 .fade-in {
   animation: fadeIn 0.5s forwards;
+  display: block;
 }
+
 .fade-out {
   animation: fadeOut 0.5s forwards;
+  pointer-events: none;
 }
+
 .hidden {
   display: none;
 }
