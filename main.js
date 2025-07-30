@@ -218,27 +218,14 @@ function switchToMenu() {
   backToMenuDuringQuizBtn.classList.add("hidden");
 
   const showMenu = () => {
-    console.log("showMenu called");
     fadeIn(menu);
   };
 
   if (!quizContainer.classList.contains("hidden")) {
-    console.log("fading quizContainer");
     fadeOut(quizContainer, () => {
       quizContainer.classList.add("hidden");
       showMenu();
     });
-  } else if (!resultContainer.classList.contains("hidden")) {
-    console.log("fading resultContainer");
-    fadeOut(resultContainer, () => {
-      resultContainer.classList.add("hidden");
-      showMenu();
-    });
-  } else {
-    showMenu();
-  }
-} 
-
   } else if (!resultContainer.classList.contains("hidden")) {
     fadeOut(resultContainer, () => {
       resultContainer.classList.add("hidden");
