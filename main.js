@@ -105,25 +105,21 @@ backToMenuBtn.addEventListener("click", () => switchToMenu());
 backToMenuDuringQuizBtn.addEventListener("click", () => switchToMenu());
 
 function fadeOut(element, callback) {
+  if (element.classList.contains("hidden")) return callback();
+
   element.classList.remove('fade-in');
   element.classList.add('fade-out');
-  let called = false;
 
-  function done() {
-    if (called) return;
-    called = true;
+  const onEnd = () => {
+    element.removeEventListener('animationend', onEnd);
+    element.classList.add('hidden');
+    element.classList.remove('fade-out');
     callback();
-  }
+  };
 
-  element.addEventListener('animationend', () => {
-    element.classList.add('hidden');
-    done();
-  });
+  element.addEventListener('animationend', onEnd);
 
-  setTimeout(() => {
-    element.classList.add('hidden');
-    done();
-  }, 600);
+  setTimeout(onEnd, 700);
 }
 
 function fadeIn(element) {
@@ -214,11 +210,15 @@ function showResult() {
 }
 
 function switchToMenu() {
+  if (isTransitioning) return;
+  isTransitioning = true;
+
   clearTimeout(timer);
   backToMenuDuringQuizBtn.classList.add("hidden");
 
   const showMenu = () => {
     fadeIn(menu);
+    isTransitioning = false;
   };
 
   if (!quizContainer.classList.contains("hidden")) {
