@@ -3,38 +3,107 @@
 <head>
 <meta charset="UTF-8" />
 <title>Quiz WF</title>
-<link rel="stylesheet" href="style.css" />
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #a3d9b1;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .container {
+    background: rgba(12, 60, 35, 0.85);
+    padding: 2rem;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 600px;
+  }
+
+  select, button {
+    font-size: 1rem;
+    padding: 0.7rem 1.2rem;
+    margin-top: 1rem;
+    border-radius: 10px;
+    border: none;
+    background: #064635;
+    color: #a3d9b1;
+    cursor: pointer;
+  }
+
+  button.correct {
+    background: #39ff14;
+    color: #003300;
+  }
+
+  button.incorrect {
+    background: #ff2e2e;
+    color: #330000;
+  }
+
+  #timer-bar {
+    height: 8px;
+    background: #064635;
+    border-radius: 6px;
+    margin: 10px 0 20px 0;
+    overflow: hidden;
+  }
+
+  #timer-progress {
+    height: 100%;
+    width: 100%;
+    background: #23d997;
+    transition: width 1s linear;
+  }
+</style>
 </head>
 <body>
 
-<div id="menu">
-  <select id="theme-select">
-    <option value="">-- Choisis une thématique --</option>
-    <option value="💧 Eau">💧 Eau</option>
-    <option value="🌤️ Climat">🌤️ Climat</option>
-    <option value="🌱 Biodiversité">🌱 Biodiversité</option>
-    <option value="♻️ Impacts sur Wallis et Futuna">♻️ Impacts sur Wallis et Futuna</option>
-    <option value="⚡ Énergie">⚡ Énergie</option>
-    <option value="🗑️ Déchets">🗑️ Déchets</option>
-    <option value="aleatoire">Aléatoire</option>
-  </select>
-  <button id="start-btn">Démarrer</button>
-</div>
+<div class="container">
 
-<div id="quiz-container" class="hidden">
-  <h2 id="theme"></h2>
-  <div id="question"></div>
-  <div id="answers"></div>
-  <div id="explication" class="hidden"></div>
-  <div id="timer-progress"></div>
-  <button id="next-btn" class="hidden">Question suivante</button>
-  <button id="back-to-menu-during-quiz-btn">Retour au menu</button>
-</div>
+  <div id="menu">
+    <select id="theme-select">
+      <option value="">-- Choisis une thématique --</option>
+      <option value="💧 Eau">💧 Eau</option>
+      <option value="🌤️ Climat">🌤️ Climat</option>
+      <option value="🌱 Biodiversité">🌱 Biodiversité</option>
+      <option value="♻️ Impacts sur Wallis et Futuna">♻️ Impacts sur Wallis et Futuna</option>
+      <option value="⚡ Énergie">⚡ Énergie</option>
+      <option value="🗑️ Déchets">🗑️ Déchets</option>
+      <option value="aleatoire">Aléatoire</option>
+    </select>
+    <button id="start-btn">Démarrer</button>
+  </div>
 
-<div id="result-container" class="hidden">
-  <div id="result-text"></div>
-  <div id="citation"></div>
-  <button id="back-to-menu-btn">Retour au menu</button>
+  <div id="quiz-container" class="hidden">
+    <h2 id="theme"></h2>
+    <div id="question"></div>
+    <div id="answers"></div>
+    <div id="explication" class="hidden"></div>
+
+    <div id="timer-bar">
+      <div id="timer-progress"></div>
+    </div>
+
+    <button id="next-btn" class="hidden">Question suivante</button>
+    <button id="back-to-menu-during-quiz-btn">Retour au menu</button>
+  </div>
+
+  <div id="result-container" class="hidden">
+    <div id="result-text"></div>
+    <div id="citation"></div>
+    <button id="back-to-menu-btn">Retour au menu</button>
+  </div>
+
 </div>
 
 <script src="quiz.js"></script>
