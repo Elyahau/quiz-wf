@@ -124,15 +124,16 @@ function showQuestion(index) {
   q.answers.forEach((answer, i) => {
     const btn = document.createElement("button");
     btn.textContent = answer;
-    btn.onclick = () => handleAnswer(i === q.correct, btn);
+    btn.onclick = () => handleAnswer(i, btn);
     answersContainer.appendChild(btn);
   });
 
   startTimer();
 }
 
-function handleAnswer(isCorrect, btn) {
+function handleAnswer(selectedIndex, btn) {
   const currentQ = currentQuestions[currentQuestionIndex];
+  const isCorrect = selectedIndex === currentQ.correct;
 
   if (isCorrect) {
     score++;
@@ -172,7 +173,7 @@ function getCitation() {
     "« Haofaki te natula kitou kahau. » — wallisien",
     "« Agis local, pense global. »",
     "« La nature suffit à tout. » — Montaigne",
-    "« Faka'apa'apa ki he fenua mo e vai. » — Futunien"
+    "« Faka'apa'apa ki he fenua mo e vai. » — Futunien",
     "« Si vous pensez que l’environnement est moins important que l’économie, essayez de retenir votre souffle pendant que vous comptez votre argent. »"
   ];
   return citations[Math.floor(Math.random() * citations.length)];
