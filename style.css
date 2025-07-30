@@ -11,10 +11,6 @@ body {
   min-height: 100vh;
 }
 
-.hidden {
-  display: none;
-}
-
 .container {
   background: rgba(12, 60, 35, 0.85);
   padding: 2rem;
@@ -38,6 +34,11 @@ select, button {
 
 select:hover, button:hover {
   background: #0a6c40;
+}
+
+button:focus {
+  outline: 2px solid #a3d9b1;
+  outline-offset: 2px;
 }
 
 button.correct {
@@ -67,16 +68,14 @@ button.incorrect {
 
 .fade-in {
   animation: fadeIn 0.5s forwards;
-  display: block;
 }
 
 .fade-out {
   animation: fadeOut 0.5s forwards;
-  pointer-events: none;
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 @keyframes fadeIn {
