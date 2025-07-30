@@ -74,7 +74,6 @@ const questions = {
 
 const startBtn = document.getElementById("start-btn");
 const nextBtn = document.getElementById("next-btn");
-const modeSelect = document.getElementById("mode-select");
 const themeSelect = document.getElementById("theme-select");
 const quizContainer = document.getElementById("quiz-container");
 const resultContainer = document.getElementById("result-container");
@@ -87,44 +86,73 @@ const timerProgress = document.getElementById("timer-progress");
 const backToMenuBtn = document.getElementById("back-to-menu-btn");
 const backToMenuDuringQuizBtn = document.getElementById("back-to-menu-during-quiz-btn");
 const explicationElement = document.getElementById("explication");
+const menu = document.getElementById("menu");
 
 let currentQuestions = [];
 let currentQuestionIndex = 0;
 let score = 0;
 let timer;
+let timerDuration = 15;
 
-startBtn.addEventListener("click", startQuiz);
-nextBtn.addEventListener("click", () => showQuestion(++currentQuestionIndex));
-backToMenuBtn.addEventListener("click", resetQuiz);
-backToMenuDuringQuizBtn.addEventListener("click", resetQuiz);
-
-function startQuiz() {
+startBtn.addEventListener("click", () => {
   const selectedTheme = themeSelect.value;
   if (!selectedTheme) return alert("Choisis une thématique !");
+  startQuiz(selectedTheme);
+});
+
+nextBtn.addEventListener("click", () => showQuestion(++currentQuestionIndex));
+backToMenuBtn.addEventListener("click", () => switchToMenu());
+backToMenuDuringQuizBtn.addEventListener("click", () => switchToMenu());
+
+function fadeOut(element, callback) {
+  element.classList.remove('fade-in');
+  element.classList.add('fade-out');
+  element.addEventListener('animationend', function handler() {
+    element.removeEventListener('animationend', handler);
+    callback();
+  });
+}
+
+function fadeIn(element) {
+  element.classList.remove('fade-out');
+  element.classList.add('fade-in');
+  element.classList.remove('hidden');
+}
+
+function startQuiz(selectedTheme) {
   currentQuestions = selectedTheme === "aleatoire"
     ? Object.values(questions).flat().sort(() => 0.5 - Math.random()).slice(0, 5)
-    : [...questions[selectedTheme]];
+    : [...(questions[selectedTheme] || [])];
+
+  if (currentQuestions.length === 0) {
+    alert("Pas de questions disponibles pour ce thème.");
+    return;
+  }
 
   themeElement.textContent = selectedTheme;
-  document.getElementById("menu").classList.add("hidden");
-  quizContainer.classList.remove("hidden");
-  backToMenuDuringQuizBtn.classList.remove("hidden");
-
-  currentQuestionIndex = 0;
   score = 0;
-  showQuestion(currentQuestionIndex);
+  currentQuestionIndex = 0;
+
+  fadeOut(menu, () => {
+    menu.classList.add("hidden");
+    fadeIn(quizContainer);
+    backToMenuDuringQuizBtn.classList.remove("hidden");
+    showQuestion(currentQuestionIndex);
+  });
 }
 
 function showQuestion(index) {
   clearTimeout(timer);
   nextBtn.classList.add("hidden");
-
   explicationElement.classList.add("hidden");
   explicationElement.textContent = "";
+  timerProgress.style.width = "100%";
 
-  if (index >= currentQuestions.length) return showResult();
+  if (index >= currentQuestions.length) {
+    return showResult();
+  }
+
   const q = currentQuestions[index];
-
   questionElement.textContent = q.question;
   answersContainer.innerHTML = "";
 
@@ -148,7 +176,7 @@ function handleAnswer(selectedIndex, btn) {
   } else {
     if (btn) btn.classList.add("incorrect");
     const correctBtn = answersContainer.children[currentQ.correct];
-    correctBtn.classList.add("correct");
+    if (correctBtn) correctBtn.classList.add("correct");
   }
 
   Array.from(answersContainer.children).forEach(b => b.disabled = true);
@@ -160,46 +188,55 @@ function handleAnswer(selectedIndex, btn) {
   }
 }
 
-
-
 function showResult() {
-  quizContainer.classList.add("hidden");
-  resultContainer.classList.remove("hidden");
-  resultText.textContent = `Tu as obtenu ${score} / ${currentQuestions.length} bonnes réponses.`;
-  citationText.textContent = getCitation();
-  backToMenuDuringQuizBtn.classList.add("hidden");
+  fadeOut(quizContainer, () => {
+    quizContainer.classList.add("hidden");
+    resultContainer.classList.remove("hidden");
+    resultText.textContent = `Tu as obtenu ${score} / ${currentQuestions.length} bonnes réponses.`;
+    citationText.textContent = getCitation();
+    fadeIn(resultContainer);
+    backToMenuDuringQuizBtn.classList.add("hidden");
+  });
 }
 
-function resetQuiz() {
-  resultContainer.classList.add("hidden");
-  quizContainer.classList.add("hidden");
-  document.getElementById("menu").classList.remove("hidden");
+function switchToMenu() {
+  clearTimeout(timer);
+  fadeOut(quizContainer, () => {
+    quizContainer.classList.add("hidden");
+    fadeOut(resultContainer, () => {
+      resultContainer.classList.add("hidden");
+      fadeIn(menu);
+    });
+  });
 }
 
 function getCitation() {
-const citations = [
-  "« La Terre ne nous appartient pas, nous l’empruntons à nos enfants. » — Proverbe amérindien",
-  "« Haofaki te natula kitou kahau. » — wallisien",
-  "« Agis local, pense global. »",
-  "« La nature suffit à tout. » — Montaigne",
-  "« Faka'apa'apa ki he fenua mo e vai. » — Futunien",
-  "«Le changement climatique est le défi de notre génération. » – Barack Obama",
-  "«La nature n’est pas un endroit à visiter, c’est chez nous. » – Gary Snyder",
-  "«L’environnement, c’est tout ce que nous ne possédons pas encore. » – Albert Einstein",
-  "«Chaque petit geste compte pour un grand changement. »",
-  "«Wallis et Futuna, un trésor naturel à préserver. »",
-  "«La biodiversité, c’est la richesse du vivant. Protégeons-la. »",
-  "« Si vous pensez que l’environnement est moins important que l’économie, essayez de retenir votre souffle pendant que vous comptez votre argent. »"
-];
-
+  const citations = [
+    "« La Terre ne nous appartient pas, nous l’empruntons à nos enfants. » — Proverbe amérindien",
+    "« Haofaki te natula kitou kahau. » — wallisien",
+    "« Agis local, pense global. »",
+    "« La nature suffit à tout. » — Montaigne",
+    "« Faka'apa'apa ki he fenua mo e vai. » — Futunien",
+    "«Le changement climatique est le défi de notre génération. » – Barack Obama",
+    "«La nature n’est pas un endroit à visiter, c’est chez nous. » – Gary Snyder",
+    "«L’environnement, c’est tout ce que nous ne possédons pas encore. » – Albert Einstein",
+    "«Chaque petit geste compte pour un grand changement. »",
+    "«Wallis et Futuna, un trésor naturel à préserver. »",
+    "«La biodiversité, c’est la richesse du vivant. Protégeons-la. »",
+    "« Si vous pensez que l’environnement est moins important que l’économie, essayez de retenir votre souffle pendant que vous comptez votre argent. »"
+  ];
   return citations[Math.floor(Math.random() * citations.length)];
 }
 
 function startTimer() {
-  let duration = 15;
+  let duration = timerDuration;
+  timerProgress.style.width = "100%";
+
   function updateTimer() {
-    timerProgress.style.width = `${(duration / 15) * 100}%`;
-    if (duration-- > 0) {
+    duration--;
+    timerProgress.style.width = (duration / timerDuration * 100) + "%";
+
+    if (duration > 0) {
       timer = setTimeout(updateTimer, 1000);
     } else {
       handleAnswer(-1, null);
