@@ -133,21 +133,23 @@ function fadeOut(element, callback) {
   }, 600);
 }
 
-function fadeIn(element) {
-  if (isTransitioning) return;
-  isTransitioning = true;
-
+function fadeIn(element, callback) {
   element.classList.remove('hidden');
   void element.offsetWidth;
   element.classList.remove('fade-out');
   element.classList.add('fade-in');
 
-  element.addEventListener('animationend', () => {
+  const onEnd = () => {
+    element.removeEventListener('animationend', onEnd);
     isTransitioning = false;
-  }, { once: true });
+    if (callback) callback();
+  };
+
+  element.addEventListener('animationend', onEnd);
 
   setTimeout(() => {
     isTransitioning = false;
+    if (callback) callback();
   }, 600);
 }
 
@@ -239,9 +241,9 @@ function switchToMenu() {
   backToMenuDuringQuizBtn.classList.add("hidden");
 
   const showMenu = () => {
-    fadeIn(menu, () => {
-      isTransitioning = false;
-    });
+    setTimeout(() => {
+      fadeIn(menu);
+    }, 50);
   };
 
   if (!quizContainer.classList.contains("hidden")) {
