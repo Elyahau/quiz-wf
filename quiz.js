@@ -139,6 +139,7 @@ function showQuestion(index) {
 }
 
 function handleAnswer(selectedIndex, btn) {
+  clearTimeout(timer);
   const currentQ = currentQuestions[currentQuestionIndex];
 
   if (selectedIndex === currentQ.correct) {
@@ -158,6 +159,8 @@ function handleAnswer(selectedIndex, btn) {
     explicationElement.classList.remove("hidden");
   }
 }
+
+
 
 function showResult() {
   quizContainer.classList.add("hidden");
