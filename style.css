@@ -11,7 +11,9 @@ body {
   min-height: 100vh;
 }
 
-.hidden { display: none; }
+.hidden {
+  display: none;
+}
 
 .container {
   background: rgba(12, 60, 35, 0.85);
