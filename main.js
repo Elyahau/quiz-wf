@@ -201,13 +201,28 @@ function showResult() {
 
 function switchToMenu() {
   clearTimeout(timer);
-  fadeOut(quizContainer, () => {
-    quizContainer.classList.add("hidden");
+
+  if (!quizContainer.classList.contains("hidden")) {
+    fadeOut(quizContainer, () => {
+      quizContainer.classList.add("hidden");
+
+      if (!resultContainer.classList.contains("hidden")) {
+        fadeOut(resultContainer, () => {
+          resultContainer.classList.add("hidden");
+          fadeIn(menu);
+        });
+      } else {
+        fadeIn(menu);
+      }
+    });
+  } else if (!resultContainer.classList.contains("hidden")) {
     fadeOut(resultContainer, () => {
       resultContainer.classList.add("hidden");
       fadeIn(menu);
     });
-  });
+  } else {
+    fadeIn(menu);
+  }
 }
 
 function getCitation() {
