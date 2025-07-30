@@ -62,7 +62,7 @@ const questions = {
       answers: ["Les brûler", "Les jeter en mer", "Les composter", "Les enterrer sans traitement"],
       correct: 2,
       explication: "Le compostage transforme les déchets organiques en engrais naturel pour les sols."
-    }
+    },
     {
       question: "Quel est l'impact du plastique dans l'océan ?",
       answers: ["Il aide les poissons à respirer", "Il sert d’abri aux coraux", "Il pollue et tue des espèces marines", "Aucun impact"],
