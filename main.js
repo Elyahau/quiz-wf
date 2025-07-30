@@ -241,9 +241,8 @@ function switchToMenu() {
   backToMenuDuringQuizBtn.classList.add("hidden");
 
   const showMenu = () => {
-    setTimeout(() => {
-      fadeIn(menu);
-    }, 50);
+    menu.classList.remove('hidden'); 
+    fadeIn(menu);
   };
 
   if (!quizContainer.classList.contains("hidden")) {
