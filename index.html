@@ -1,112 +1,163 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
-<title>Quiz WF</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-    color: #a3d9b1;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-  }
+  <meta charset="UTF-8" />
+  <title>Quiz WF</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #a3d9b1;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
 
-  .hidden {
-    display: none;
-  }
+    .hidden {
+      display: none;
+    }
 
-  .container {
-    background: rgba(12, 60, 35, 0.85);
-    padding: 2rem;
-    border-radius: 20px;
-    width: 100%;
-    max-width: 600px;
-  }
+    .container {
+      background: rgba(12, 60, 35, 0.85);
+      padding: 2rem;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 600px;
+    }
 
-  select, button {
-    font-size: 1rem;
-    padding: 0.7rem 1.2rem;
-    margin-top: 1rem;
-    border-radius: 10px;
-    border: none;
-    background: #064635;
-    color: #a3d9b1;
-    cursor: pointer;
-  }
+    select, button {
+      font-size: 1rem;
+      padding: 0.7rem 1.2rem;
+      margin-top: 1rem;
+      border-radius: 10px;
+      border: none;
+      background: #064635;
+      color: #a3d9b1;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
 
-  button.correct {
-    background: #39ff14;
-    color: #003300;
-  }
+    select:hover, button:hover {
+      background: #0a6c40;
+    }
 
-  button.incorrect {
-    background: #ff2e2e;
-    color: #330000;
-  }
+    button.correct {
+      background: #39ff14;
+      color: #003300;
+    }
 
-  #timer-bar {
-    height: 8px;
-    background: #064635;
-    border-radius: 6px;
-    margin: 10px 0 20px 0;
-    overflow: hidden;
-  }
+    button.incorrect {
+      background: #ff2e2e;
+      color: #330000;
+    }
 
-  #timer-progress {
-    height: 100%;
-    width: 100%;
-    background: #23d997;
-    transition: width 1s linear;
-  }
-</style>
+    #timer-bar {
+      height: 8px;
+      background: #064635;
+      border-radius: 6px;
+      margin: 10px 0 20px 0;
+      overflow: hidden;
+    }
+
+    #timer-progress {
+      height: 100%;
+      width: 100%;
+      background: #23d997;
+      transition: width 1s linear;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.4s forwards;
+    }
+
+    .fade-out {
+      animation: fadeOut 0.4s forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+
+    #menu {
+      background: linear-gradient(135deg, #1b4521, #3a7d44);
+      padding: 2rem;
+      border-radius: 25px;
+      width: 320px;
+      color: #d9f0d9;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    #menu select, #menu button {
+      width: 100%;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 12px;
+      border: none;
+      background-color: #2e8b57;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #menu select:hover, #menu button:hover {
+      background-color: #4caf50;
+    }
+  </style>
 </head>
 <body>
 
-<div class="container">
+  <div class="container">
 
-  <div id="menu" class="fade-in">
-    <select id="theme-select">
-      <option value="">-- Choisis une thématique --</option>
-      <option value="💧 Eau">💧 Eau</option>
-      <option value="🌤️ Climat">🌤️ Climat</option>
-      <option value="🌱 Biodiversité">🌱 Biodiversité</option>
-      <option value="♻️ Impacts sur Wallis et Futuna">♻️ Impacts sur Wallis et Futuna</option>
-      <option value="⚡ Énergie">⚡ Énergie</option>
-      <option value="🗑️ Déchets">🗑️ Déchets</option>
-      <option value="aleatoire">Aléatoire</option>
-    </select>
-    <button id="start-btn">Démarrer</button>
-  </div>
-
-  <div id="quiz-container" class="container hidden">
-    <h2 id="theme"></h2>
-    <div id="question"></div>
-    <div id="answers"></div>
-    <div id="explication" class="hidden"></div>
-
-    <div id="timer-bar">
-      <div id="timer-progress"></div>
+    <div id="menu" class="fade-in">
+      <select id="theme-select">
+        <option value="">-- Choisis une thématique --</option>
+        <option value="💧 Eau">💧 Eau</option>
+        <option value="🌤️ Climat">🌤️ Climat</option>
+        <option value="🌱 Biodiversité">🌱 Biodiversité</option>
+        <option value="♻️ Impacts sur Wallis et Futuna">♻️ Impacts sur Wallis et Futuna</option>
+        <option value="⚡ Énergie">⚡ Énergie</option>
+        <option value="🗑️ Déchets">🗑️ Déchets</option>
+        <option value="aleatoire">Aléatoire</option>
+      </select>
+      <button id="start-btn">Démarrer</button>
     </div>
 
-    <button id="next-btn" class="hidden">Question suivante</button>
-    <button id="back-to-menu-during-quiz-btn">Retour au menu</button>
+    <div id="quiz-container" class="container hidden">
+      <h2 id="theme"></h2>
+      <div id="question"></div>
+      <div id="answers"></div>
+      <div id="explication" class="hidden"></div>
+
+      <div id="timer-bar">
+        <div id="timer-progress"></div>
+      </div>
+
+      <button id="next-btn" class="hidden">Question suivante</button>
+      <button id="back-to-menu-during-quiz-btn">Retour au menu</button>
+    </div>
+
+    <div id="result-container" class="container hidden">
+      <div id="result-text"></div>
+      <div id="citation"></div>
+      <button id="back-to-menu-btn">Retour au menu</button>
+    </div>
+
   </div>
 
-  <div id="result-container" class="container hidden">
-    <div id="result-text"></div>
-    <div id="citation"></div>
-    <button id="back-to-menu-btn">Retour au menu</button>
-  </div>
-
-</div>
-
-<script src="main.js" defer></script>
+  <script src="main.js" defer></script>
 
 </body>
 </html>
+
