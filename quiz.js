@@ -174,20 +174,21 @@ function resetQuiz() {
 }
 
 function getCitation() {
-  const citations = [
-    "« La Terre ne nous appartient pas, nous l’empruntons à nos enfants. » — Proverbe amérindien",
-    "« Haofaki te natula kitou kahau. » — wallisien",
-    "« Agis local, pense global. »",
-    "« La nature suffit à tout. » — Montaigne",
-    "« Faka'apa'apa ki he fenua mo e vai. » — Futunien",
-    "«Le changement climatique est le défi de notre génération. » – Barack Obama",
-    "«La nature n’est pas un endroit à visiter, c’est chez nous. » – Gary Snyder",
-    "«L’environnement, c’est tout ce que nous ne possédons pas encore. » – Albert Einstein",
-    "«Chaque petit geste compte pour un grand changement. »",
-    "«Wallis et Futuna, un trésor naturel à préserver. »",
-    "«La biodiversité, c’est la richesse du vivant. Protégeons-la. »"
-    "« Si vous pensez que l’environnement est moins important que l’économie, essayez de retenir votre souffle pendant que vous comptez votre argent. »"
-  ];
+const citations = [
+  "« La Terre ne nous appartient pas, nous l’empruntons à nos enfants. » — Proverbe amérindien",
+  "« Haofaki te natula kitou kahau. » — wallisien",
+  "« Agis local, pense global. »",
+  "« La nature suffit à tout. » — Montaigne",
+  "« Faka'apa'apa ki he fenua mo e vai. » — Futunien",
+  "«Le changement climatique est le défi de notre génération. » – Barack Obama",
+  "«La nature n’est pas un endroit à visiter, c’est chez nous. » – Gary Snyder",
+  "«L’environnement, c’est tout ce que nous ne possédons pas encore. » – Albert Einstein",
+  "«Chaque petit geste compte pour un grand changement. »",
+  "«Wallis et Futuna, un trésor naturel à préserver. »",
+  "«La biodiversité, c’est la richesse du vivant. Protégeons-la. »",
+  "« Si vous pensez que l’environnement est moins important que l’économie, essayez de retenir votre souffle pendant que vous comptez votre argent. »"
+];
+
   return citations[Math.floor(Math.random() * citations.length)];
 }
 
