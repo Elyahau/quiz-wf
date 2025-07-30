@@ -82,3 +82,29 @@ button.incorrect {
   from {opacity: 1;}
   to {opacity: 0;}
 }
+
+#menu {
+  background: linear-gradient(135deg, #1b4521, #3a7d44);
+  padding: 2rem;
+  border-radius: 25px;
+  width: 320px;
+  color: #d9f0d9;
+  text-align: center;
+}
+
+#menu select, #menu button {
+  width: 100%;
+  padding: 1rem;
+  margin-top: 1rem;
+  border-radius: 12px;
+  border: none;
+  background-color: #2e8b57;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#menu select:hover, #menu button:hover {
+  background-color: #4caf50;
+}
