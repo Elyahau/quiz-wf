@@ -1,148 +1,20 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Quiz WF</title>
-  <style>
-    .hidden { display: none; }
-    button.correct { background-color: green; }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: #a3d9b1;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .container {
-      background: rgba(12, 60, 35, 0.85);
-      padding: 2rem;
-      border-radius: 20px;
-      box-shadow: 0 0 15px #2ed573;
-      width: 100%;
-      max-width: 650px;
-      backdrop-filter: blur(8px);
-      border: 2px solid #2ed573;
-    }
-    h1 {
-      color: #7bed9f;
-      font-weight: 700;
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-      animation: glitch 2s infinite;
-    }
-    select, button {
-      font-size: 1.1rem;
-      padding: 0.7rem 1.2rem;
-      margin-top: 1.5rem;
-      border-radius: 12px;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-      box-shadow: 0 0 8px #23d997;
-      background: #064635;
-      color: #a3d9b1;
-      transition: all 0.3s ease;
-    }
-    select:hover, button:hover:not(:disabled) {
-      background: #23d997;
-      color: #003d00;
-      box-shadow: 0 0 12px #23d997, 0 0 20px #1aff73;
-      animation: glow 1.5s infinite alternate;
-    }
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-    .question {
-      font-size: 1.3rem;
-      margin-bottom: 1.5rem;
-      font-weight: 600;
-      text-shadow: 0 0 6px #23d997aa;
-    }
-    .answers button {
-      background: #0b3d1d;
-      color: #a3d9b1;
-      margin: 0.4rem 0;
-      padding-left: 1rem;
-      text-align: left;
-      box-shadow: inset 0 0 10px #21bf73;
-      border-radius: 10px;
-      transition: background 0.3s, color 0.3s, box-shadow 0.3s;
-    }
-    .answers button.correct {
-      background: #39ff14;
-      color: #003300;
-      font-weight: 700;
-      box-shadow: 0 0 20px #39ff14;
-      text-shadow: 0 0 6px #003300;
-    }
-    .answers button.incorrect {
-      background: #ff2e2e;
-      color: #330000;
-      font-weight: 700;
-      box-shadow: 0 0 20px #ff2e2e;
-      text-shadow: 0 0 6px #330000;
-    }
-    #timer {
-      font-weight: 700;
-      font-size: 1.2rem;
-      margin: 1.2rem 0;
-      color: #23d997;
-      text-shadow: 0 0 6px #23d997cc;
-      animation: glow 2s infinite alternate;
-    }
-    #theme {
-      font-size: 1.4rem;
-      margin-bottom: 1rem;
-      color: #7bed9f;
-      text-shadow: 0 0 8px #23d997;
-    }
-    #timer-bar {
-      width: 100%;
-      height: 8px;
-      background: #064635;
-      border-radius: 6px;
-      margin-bottom: 10px;
-      overflow: hidden;
-    }
-    #timer-progress {
-      height: 100%;
-      width: 100%;
-      background: #23d997;
-      border-radius: 6px;
-      transition: width 1s linear;
-    }
-    .hidden { display: none !important; }
-    @keyframes glow {
-      0%,100% { box-shadow: 0 0 5px #23d997; }
-      50% { box-shadow: 0 0 20px #1aff73; }
-    }
-    @keyframes glitch {
-      0%,100% { clip: rect(0,900px,0,0); transform: translate(0); }
-      10% { clip: rect(0,900px,50px,0); transform: translate(-2px,-2px); }
-      20% { clip: rect(10px,900px,40px,0); transform: translate(2px,2px); }
-      30% { clip: rect(20px,900px,30px,0); transform: translate(-2px,2px); }
-      40% { clip: rect(30px,900px,20px,0); transform: translate(2px,-2px); }
-      50% { clip: rect(40px,900px,10px,0); transform: translate(0); }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
     <div id="menu">
       <h1>🌍 Quiz Écologie</h1>
-      <label for="mode-select" style="color:#00ffea;font-family:'Orbitron',sans-serif;">Choisir le mode de jeu :</label><br/>
+      <label for="mode-select">Mode de jeu :</label><br />
       <select id="mode-select">
-        <option value="normal">Mode Normal</option>
-        <option value="battle">Mode Battle</option>
-      </select><br/>
-      <label for="theme-select" style="margin-top:15px; display:block;">Choisis une thématique :</label>
+        <option value="normal">Normal</option>
+        <option value="battle">Battle</option>
+      </select><br />
+      <label for="theme-select">Thématique :</label><br />
       <select id="theme-select">
         <option value="">-- Choisir --</option>
         <option value="💧 Eau">💧 Eau</option>
@@ -152,15 +24,15 @@
         <option value="⚡ Énergie">⚡ Énergie</option>
         <option value="🗑️ Déchets">🗑️ Déchets</option>
         <option value="aleatoire">🎲 Aléatoire</option>
-      </select><br/>
-      <button id="start-btn">Commencer le quiz</button>
+      </select><br />
+      <button id="start-btn">Démarrer</button>
     </div>
 
     <div id="quiz-container" class="hidden">
       <div id="theme"></div>
       <div id="question" class="question"></div>
       <div id="timer-bar"><div id="timer-progress"></div></div>
-      <div id="timer"></div>
+      <div id="timer-display"></div>
       <div id="answers" class="answers"></div>
       <button id="next-btn" class="hidden">Suivant</button>
     </div>
